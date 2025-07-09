@@ -1,8 +1,14 @@
+HyBRIS: a Hybrid Bare Soil Radar Index to detect farming practices in Europe
+Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
+Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
+
 We combined indices sensitive to soil roughness and bare soil exposure (VV/VH, BSI) to detect sowing, harvesting, and tillage. We combined the Bare Soil Index (BSI) derived from Sentinel 2 and the VV/VH ratio derived from Sentinel 1 into the daily Hybrid Bare Soil and Radar Index (HyBRIS) (Figure below, a). The normalization step ensures the values of BSI and VV/VH to be within the [0, 1] range. To calculate HyBRIS for each day, a temporal window of ±30 days was adopted.  X ̅_d  is the weighted mean of the radar and optical observations that fall within this defined timeframe. This window size ensures the inclusion of at least two radar acquisitions from the same orbit before and after the target day, given the 12-day revisit cycle of each orbit of Sentinel 1, and increases the likelihood of incorporating cloud-free optical observations during persistently cloudy periods. The Sentinel 1 and 2 observations acquired within this window are considered (n), and aggregated with a weighted mean. Expanding the window beyond ±30 days had minimal impact on the aggregated index values, as the weighting mean reduces the influence of observations further from the target day. The weights (wi) of each Sentinel observation are calculated based on the inverse of the absolute difference in days between the target day (d) and the date of acquisition of the Sentinel image (i).
-w_i=1/(t_i+1)                               where t_i=|d-i| . 
+![image](https://github.com/user-attachments/assets/960f70d4-cd5b-41f6-8327-59fe923ea94a)
+
 This way, images acquired closer to the target day have higher weights and contribute more to the fused index, while images acquired further from each day have lower weights. 
 Thus, the weighted mean becomes:
-X ̅_d=(∑_i^n▒〖w_i X_i 〗)/(∑_i^n▒w_i )    for each i∈(d±30)
+![image](https://github.com/user-attachments/assets/94ad335f-03d1-4f03-9099-00dd3daea271)
+
 where:
 	X ̅_d is the value of the fused daily index at day d
 	n is the total number of images present in the temporal window d±30
