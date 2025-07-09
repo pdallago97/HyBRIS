@@ -10,6 +10,7 @@ We combined indices sensitive to soil roughness and bare soil exposure (VV/VH, B
 
 This way, images acquired closer to the target day have higher weights and contribute more to the fused index, while images acquired further from each day have lower weights. 
 Thus, the weighted mean becomes:
+
 ![image](https://github.com/user-attachments/assets/94ad335f-03d1-4f03-9099-00dd3daea271)
 
 where:
