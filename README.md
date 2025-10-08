@@ -24,3 +24,5 @@ HYBRIS=1- X ̅_d
 
 
 ![image](https://github.com/user-attachments/assets/4636ba3f-c3d8-436c-901b-5cdde1ebccb1)
+
+Note that the considered length of the time series influences the amplitude of the time series itself. This is due to the normalization process done with percentiles (0.02-0.98) within the observation period.
