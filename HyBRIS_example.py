@@ -1,14 +1,14 @@
-from HyBRIS_calculation import *
+from HyBRIS_utils import *
 
 #load data
 
 #Ground truth data with sowing and harvest dates
-field = pd.read_csv('GroundTruth_example.csv')
+field = pd.read_csv('Example/GroundTruth_example.csv')
 field['Date'] = pd.to_datetime(field['Date']) #make sure the date column is in datetime format
 
 #paths to example data files, the Sentinel 1 and 2 time series
-s2_path = 'Sentinel2_example.csv'
-s1_path = 'Sentinel1_example.csv'
+s2_path = 'Example/Sentinel2_example.csv'
+s1_path = 'Example/Sentinel1_example.csv'
 
 # Open Sentinel-2, remove NA, merge observation on the same day, and add Vegetation indices
 bandsused = ['B1', 'B2', 'B3', 'B4','B5', 'B6', 'B7', 'B8', 'B8A', 'B11', 'B12']
@@ -85,7 +85,7 @@ plt.show()
 ####PLOT FIGURE WITH 4 PANELS
 fig, axes = plt.subplots(nrows=4, ncols=1, figsize=(8.2, 11.5), sharex=True)
 # Invert Hybris index
-pp_example['daily_index'] = 1 - pp_example['daily_index']
+pp_example.loc[:, 'daily_index'] = 1 - pp_example['daily_index']
 
 # --- First panel: S2, S1, HYBRIS
 plot_time_series(s2_example[s2_band], s2_example['date'], color='red', title=s2_band,
@@ -96,7 +96,7 @@ plot_time_series(pp_example['daily_index'], pp_example['date'], color='brown', t
                  add=True, ax=axes[0], show=False)
 
 # Restore original HYBRIS index if needed
-pp_example['daily_index'] = 1 - pp_example['daily_index']
+pp_example.loc[:, 'daily_index'] = 1 - pp_example['daily_index']
 
 # --- Second panel: NDVI, VH/VV, HYBRIS
 plot_time_series(s2_example["NDVI"], s2_example['date'], color='green', title="NDVI",
