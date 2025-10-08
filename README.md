@@ -11,8 +11,11 @@ Folder structure:
 
 
 HyBRIS_utils.py : contains all the functions to calculate a Sentinel 1 and Sentinel 2 hybrid index
+
 HyBRIS_example.py : runs the code to calculate HyBRIS for an example field and plot results
+
 Dataset/: contains (part of) the dataset used for the research paper, saved as .csv
+
 Example/: contains the Sentinel 1 and 2 time series and the ground truth for an example field. These files are used to run the example code
 
 -------------------------------------------------------------------------------------------------------------
