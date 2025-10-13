@@ -4,7 +4,7 @@ Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
 
 *Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research*
 
-Please refer to DOI for more information: #paper under review#
+Please refer to DOI for more information: https://doi.org/10.2139/ssrn.5580396 #paper under review#
 
 -------------------------------------------------------------------------------------------------------------
 Folder structure:
