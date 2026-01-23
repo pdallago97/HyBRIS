@@ -36,7 +36,7 @@ where:
 	n is the total number of images present in the temporal window d±30
 	X_i is the value of the Sentinel index at image date i, either BSI or VV/VH
 	w_i is the weight assigned to each Sentinel observation
-	The denominator ∑_i^n▒w_i  is the sum of all weights within the temporal window
+	The denominator is a normalization factor, consisting of the sum of all weights within the temporal window
 BSI and VV/VH are sensitive to bare soil and show high values in the absence of vegetation. The weighted mean is subtracted from 1 to resemble the shape of classic vegetation indices (Figure below, b), with high values representing peaks of vegetation and low values bare soils:
 HYBRIS=1- X ̅_d
 
