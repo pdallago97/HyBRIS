@@ -1,0 +1,468 @@
+﻿ID;Parcel name;Date;Year;Area (ha);Method_OG;Method_EN;Ti.1_So.2_Ha.3;Crop type;Main crop or cover crop;Lat;Lon;Coordinates (center of the field);Notes;Country;Farm
+;Afweg 01;16-09-24 10:00;2024;0,7900;Frezen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Afweg 01;01-08-24 13:30;2024;0,7900;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Afweg 01;23-09-24 13:59;2024;0,7900;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Afweg 01;23-04-24 07:17;2024;0,7900;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Afweg 01;04-10-23 11:53;2023;0,5700;Oogsten;Harvesting;3;Corn;Main crop;;;;;NL;Unifarm
+;Afweg 01;18-10-23 11:23;2023;0,5700;Ploegen;Ploughing;1;Corn;Main crop;;;;;NL;Unifarm
+;Afweg 01;16-05-23 07:39;2023;0,5700;Rotorkopeggen;Harrowing;1;Corn;Main crop;;;;;NL;Unifarm
+;Afweg 01;15-11-22 15:03;2023;0,0681;Spitten;Harrowing;1;Corn;Main crop;;;;;NL;Unifarm
+;Afweg 01;30-05-23 11:23;2023;0,5700;Zaaien;Sowing;2;Corn;Main crop;;;;;NL;Unifarm
+;Afweg 02;11-08-23 11:34;2023;3,0500;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Afweg 02;07-12-22 12:37;2023;3,0500;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Afweg 02;07-09-23 11:59;2023;3,0500;Zaaien poten planten;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Born;18-01-24 07:52;2024;4,2815;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Born;01-08-24 13:32;2024;4,2900;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Born;28-08-24 11:00;2024;4,2900;Ploegen;Ploughing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Born;18-01-24 07:53;2024;4,2815;Rotorkopeggen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Born;04-09-24 10:58;2024;4,2900;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Born;18-01-24 07:53;2024;4,2815;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Born 02;24-09-24 17:13;2024;3,6600;Cultivatoren;Cultivator;1;Fodder radish;Cover crop;;;;;NL;Unifarm
+;Born 02;13-03-24 15:32;2024;3,6600;Klepelen;Mowing;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 02;10-07-23 11:22;2023;3,6900;Maaidorsen;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Born 02;15-04-24 15:38;2024;3,6600;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 02;20-09-24 07:49;2024;3,6600;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 02;30-04-24 15:36;2024;3,6600;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 02;26-09-24 16:09;2024;3,6600;Zaaien;Sowing;2;Fodder radish;Cover crop;;;;;NL;Unifarm
+;Born 02;13-07-23 14:45;2023;3,6600;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Born 02;14-08-23 16:30;2023;3,6600;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Born 02;30-04-24 15:36;2024;3,6600;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 02;10-10-22 15:42;2023;3,6600;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Born 03;07-09-23 16:12;2023;2,0376;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Born 03;19-04-23 07:05;2023;1,9355;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Born 03;12-09-23 12:44;2023;1,9355;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Born 03;26-05-23 16:05;2023;1,9355;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Born 04;10-04-24 08:06;2024;0,7942;Bereiden zaai/poot/plantbed (algemeen);Harrowing;1;Summer triticale;Main crop;;;;;NL;Unifarm
+;Born 04;11-12-23 07:38;2023;3,6000;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 04;07-12-23 08:49;2023;3,6000;Oogsten;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 04;08-04-24 07:29;2024;0,4700;Ploegen;Ploughing;1;Summer triticale;Main crop;;;;;NL;Unifarm
+;Born 04;17-04-23 07:45;2023;3,6000;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 04;10-04-24 07:31;2024;0,4700;Rotorkopeggen;Harrowing;1;Summer triticale;Main crop;;;;;NL;Unifarm
+;Born 04;19-09-24 18:57;2024;0,4700;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Born 04;20-04-23 06:28;2023;3,6000;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Born 04;10-04-24 08:06;2024;0,7942;Zaaien poten planten;Sowing;2;Summer triticale;Main crop;;;;;NL;Unifarm
+;Born 05;30-05-23 10:10;2023;3,8700;Bereiden zaai/poot/plantbed (algemeen);Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Born 05;04-10-23 13:24;2023;3,8700;Cultivatoren;Cultivator;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Born 05;02-10-23 16:04;2023;3,8700;Oogsten;Harvesting;3;Potatoes;Main crop;;;;;NL;Unifarm
+;Born 05;17-05-23 14:00;2023;3,8700;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Born 05;25-05-23 07:09;2023;3,8700;Poten;Sowing;2;Starch potato;Main crop;;;;;NL;Unifarm
+;Born 05;13-07-23 14:45;2023;3,8700;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Born 05;09-10-23 10:39;2023;3,8700;Zaaien poten planten;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Born 06;08-07-24 10:54;2024;3,5500;Maaidorsen;Harvesting;3;Colza;Main crop;;;;;NL;Unifarm
+;Born 06;14-08-24 14:00;2024;3,5500;Overige teeltmaatreg. ov.;Harrowing;1;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Born 06;24-08-23 09:31;2023;3,5500;Rotorkopeggen;Harrowing;1;Colza;Main crop;;;;;NL;Unifarm
+;Born 06;24-08-23 09:31;2023;3,5500;Woelen;Sub-soil;1;Colza;Main crop;;;;;NL;Unifarm
+;Born 06;30-08-24 08:35;2024;3,5500;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Born 06;24-08-23 09:31;2023;3,5500;Zaaien;Sowing;2;Colza;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;07-02-23 11:45;2023;1,4217;Grondbewerken (algemeen);Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;04-10-23 09:29;2023;1,4200;Oogsten;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;12-04-23 07:30;2023;1,4200;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;13-07-23 14:45;2023;1,4200;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Boskamp Zuid;16-10-23 14:27;2023;1,4200;Zaaien;Sowing;2;Fodder radish;Cover crop;;;;;NL;Unifarm
+;Boskamp Zuid;18-04-23 16:22;2023;1,4200;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;14-03-24 15:30;2024;0,0005;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;14-03-24 15:30;2024;0,4669;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;14-03-24 15:30;2024;0,0968;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;13-05-24 14:57;2024;0,5600;Poten;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;Boskamp Zuid;15-10-24 07:47;2024;0,5600;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Braam;21-09-23 12:43;2023;0,7405;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Braam;15-09-23 17:50;2023;0,1600;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Braam;09-07-24 11:00;2024;2,2025;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Braam;09-07-24 15:23;2024;2,2025;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Braam;28-02-23 12:32;2023;0,4855;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Braam;07-11-23 09:35;2023;0,7405;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Braam;25-07-24 14:56;2024;2,2025;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Commanderij 01;15-05-23 14:15;2023;1,3322;Grondbewerken (algemeen);Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Commanderij 01;09-07-24 15:23;2024;1,8663;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Commanderij 01;26-09-23 07:38;2023;1,3322;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Commanderij 01;19-04-23 07:29;2023;1,3322;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Commanderij 01;22-07-24 07:28;2024;1,8663;Zaaien;Sowing;2;Agrifirm bio divers;Cover crop;;;;;NL;Unifarm
+;Commanderij 01;16-05-23 07:10;2023;1,3322;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Commanderij 02;25-09-23 07:41;2023;1,3100;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Commanderij 02;07-09-23 14:34;2023;1,3100;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Commanderij 02;09-07-24 11:00;2024;1,9591;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Commanderij 02;22-07-24 07:28;2024;1,9591;Zaaien;Sowing;2;Agrifirm bio divers;Cover crop;;;;;NL;Unifarm
+;Commanderij 02;25-05-23 07:28;2023;1,3100;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Dijkgraaf;20-09-23 07:41;2023;0,6900;Cultivatoren;Cultivator;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Dijkgraaf;20-09-23 07:39;2023;0,6900;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Dijkgraaf;04-05-23 16:00;2023;0,6900;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Dijkgraaf;13-07-23 14:45;2023;0,6900;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Dijkgraaf;16-05-23 07:36;2023;0,6900;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Dijkgraaf;11-10-23 07:48;2023;0,6900;Zaaien poten planten;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;12-08-24 07:57;2024;1,5522;Cultivatoren;Cultivator;1;Fodder radish, yellow mustard, vetch;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;26-08-24 21:14;2024;1,5522;Cultivatoren;Cultivator;1;Fodder radish, yellow mustard, vetch;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;04-09-24 21:46;2024;1,5522;Cultivatoren;Cultivator;1;Fodder radish, yellow mustard, vetch;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;14-03-24 17:28;2024;1,5522;Dunnen/wieden;Weeding;1;Winter barley;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;20-03-24 13:33;2024;1,5522;Dunnen/wieden;Weeding;1;Winter barley;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;08-04-24 18:34;2024;1;Dunnen/wieden;Weeding;1;Winter barley;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;01-03-23 10:45;2023;1,6700;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;07-04-23 09:17;2023;1,6700;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;06-06-23 11:39;2023;1,6700;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;24-04-24 15:04;2024;1,5522;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;19-07-24 18:05;2024;1,5522;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;03-10-23 13:21;2023;1,6700;Ploegen;Ploughing;1;Winter barley;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;08-11-23 19:09;2023;1,6700;Zaaien;Sowing;2;Winter barley;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;10-09-24 20:56;2024;1,5522;Zaaien;Sowing;2;Fodder radish, yellow mustard, vetch;Cover crop;;;;;NL;Unifarm
+;Droevendaal 09;10-11-23 19:09;2023;1,6700;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 09;22-03-24 13:42;2024;1,5522;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 10;01-03-23 10:45;2023;1,2900;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 10;07-04-23 09:17;2023;1,2900;Eggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Droevendaal 10;21-03-24 12:32;2023;1,2900;Frezen volvelds;Harrowing;1;Winter rye;Main crop;;;;;NL;Unifarm
+;Droevendaal 10;03-10-23 13:21;2023;1,2900;Ploegen;Ploughing;1;Winter rye;Main crop;;;;;NL;Unifarm
+;Droevendaal 10;08-11-23 19:06;2023;1,2900;Zaaien;Sowing;2;Winter rye;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Aardappelen;04-10-23 13:24;2023;0,9400;Cultivatoren;Cultivator;1;Herb strips;Cover crop;;;;;NL;Unifarm
+;Droevendaal 14 Aardappelen;09-05-23 15:13;2023;0,9400;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Aardappelen;13-07-23 14:45;2023;0,9400;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;06-06-23 11:39;2023;2,1300;Eggen;Harrowing;1;Oat;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;08-05-23 12:30;2023;2,1300;Ploegen;Ploughing;1;Oat;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;09-05-23 15:13;2023;2,1300;Ploegen;Ploughing;1;Oat;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;02-10-23 13:23;2023;2,1300;Ploegen;Ploughing;1;Oat;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;13-07-23 14:45;2023;2,1300;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;09-05-23 15:22;2023;2,1300;Zaaien;Sowing;2;Oat;Main crop;;;;;NL;Unifarm
+;Droevendaal 14 Haver;09-10-23 16:14;2023;2,1300;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Geerhoek;14-08-23 16:23;2023;0,7871;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;01-03-23 09:34;2023;0,4400;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;01-09-23 07:52;2023;0,7871;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Geerhoek;01-09-23 16:00;2023;0,7871;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Geerhoek;05-04-23 16:48;2023;0,7871;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;01-08-24 14:38;2024;0,8087;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;24-04-24 16:27;2024;0,8087;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;25-04-24 16:27;2024;0,8087;Rotorkopeggen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Geerhoek;25-04-24 16:27;2024;0,8087;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 01;10-08-23 20:53;2023;2,1500;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 01;13-07-23 14:45;2023;2,1500;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Greb 01;08-12-22 12:37;2023;2,1500;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 01;07-09-23 14:18;2023;2,1500;Zaaien poten planten;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 01 Hutten;10-08-23 20:53;2023;2,1500;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;13-07-23 14:45;2023;2,1500;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Greb 01 Hutten;08-12-22 12:37;2023;2,1500;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;07-09-23 14:18;2023;2,1500;Zaaien poten planten;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 01 Hutten;28-05-24 19:13;2024;0,5897;Aanaarden;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;01-08-24 16:45;2024;0,7057;Frezen;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;02-02-24 07:53;2024;0,5811;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;14-05-24 16:02;2024;0,5811;Poten;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;Greb 01 Hutten;16-10-24 08:01;2024;0,7057;Rooien;Harvesting;3;Potatoes;Main crop;;;;;NL;Unifarm
+;Greb 02;24-04-24 18:24;2024;0,8400;Cultivatoren;Cultivator;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 02;05-06-24 15:24;2024;1,4400;Eggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 02;10-08-23 22:01;2023;2,0200;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 02;08-11-24 07:15;2024;1,4400;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 02;08-09-23 11:19;2023;2,0200;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 02;06-06-24 07:56;2024;1,4400;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 03;05-11-24 08:51;2024;2,2600;Ploegen;Ploughing;1;Winter wheat;Cover crop;;;;;NL;Unifarm
+;Greb 03;27-09-24 12:00;2024;2,2600;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Greb 03;30-04-24 07:40;2024;2,2600;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Greb 03;05-11-24 16:31;2024;2,2600;Zaaien;Sowing;2;Winter wheat;Cover crop;;;;;NL;Unifarm
+;Greb 03;30-04-24 07:40;2024;2,2600;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Greb 04;21-03-24 11:30;2024;1,6800;Cultivatoren;Cultivator;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 04;03-05-23 07:15;2023;1,6900;Frezen;Harrowing;1;Test field;Main crop;;;;;NL;Unifarm
+;Greb 04;25-10-24 11:00;2024;1,6800;Klepelen;Mowing;3;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 04;01-08-24 13:30;2024;1,6800;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 04;04-10-23 11:53;2023;1,6900;Oogsten;Harvesting;3;Test field;Main crop;;;;;NL;Unifarm
+;Greb 04;04-11-24 12:30;2024;1,6800;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 04;27-10-22 07:37;2023;1,6900;Ploegen;Ploughing;1;Test field;Main crop;;;;;NL;Unifarm
+;Greb 04;25-05-23 12:17;2023;1,6900;Rotorkopeggen;Harrowing;1;Test field;Main crop;;;;;NL;Unifarm
+;Greb 04;06-08-24 07:46;2024;1,6800;Woelen;Sub-soil;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 04;19-08-24 19:43;2024;1,6800;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 04;11-04-24 17:47;2024;1,6800;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 04;30-05-23 11:19;2023;1,6900;Zaaien;Sowing;2;Test field;Main crop;;;;;NL;Unifarm
+;Greb 05;21-03-24 11:30;2024;1,9600;Cultivatoren;Cultivator;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 05;25-10-24 12:34;2024;1,9600;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 05;02-05-24 09:15;2024;1,9600;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 05;02-05-24 08:20;2024;1,9600;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 05;25-10-24 13:38;2024;1,9600;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Greb 06;12-10-23 11:41;2023;2,3100;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 06;31-07-24 13:28;2024;1;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 06;15-08-24 07:31;2024;1,1566;Maaidorsen;Harvesting;3;Cover crop;Undersowing;;;;;NL;Unifarm
+;Greb 06;06-09-24 15:36;2024;2,1566;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Greb 06;12-10-23 11:41;2023;2,3100;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Greb 06;22-03-24 07:35;2024;2,1566;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Greb 01;06-06-24 13:16;2024;1,0500;Eggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 01;02-02-24 13:11;2024;1,0500;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 01;06-06-24 13:26;2024;1,0500;Zaaien poten planten;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Greb 03;15-09-23 15:42;2023;0,9400;Oogsten;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 03;14-10-22 12:49;2023;0,6850;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 03;06-10-23 14:03;2023;0,9400;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Greb 03;13-07-23 14:45;2023;0,9400;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Greb 03;31-05-23 07:38;2023;0,9400;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Haarweg 01;26-08-24 13:21;2024;5,8000;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;19-04-23 16:15;2023;5,7800;Grondbewerken (algemeen);Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 01;31-07-24 13:07;2024;5,8000;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;06-12-23 08:44;2023;5,7800;Oogsten;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 01;04-10-22 08:29;2023;5,7600;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 01;07-12-23 17:15;2023;5,7800;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 01;20-09-24 14:53;2024;5,8000;Rollen of slepen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;21-09-24 17:39;2024;5,8000;Rollen of slepen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;31-07-24 13:12;2024;5,8000;Stropersen;Straw baling;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;06-08-24 07:46;2024;5,8000;Woelen;Sub-soil;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 01;19-04-23 12:30;2023;5,7800;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 01;22-03-24 07:35;2024;5,8000;Zaaien;Sowing;2;Winter wheat;Undersowing;;;;;NL;Unifarm
+;Haarweg 04;26-08-24 13:21;2024;2,0200;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;10-10-23 11:48;2023;1,9800;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;30-07-24 11:15;2024;2,0200;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;31-07-24 13:12;2024;2,0200;Stropersen;Straw baling;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;06-08-24 07:46;2024;2,0200;Woelen;Sub-soil;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;17-09-24 15:17;2024;2,0200;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 04;10-10-23 11:48;2023;1,9800;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;26-08-24 13:21;2024;3,0300;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;10-10-23 11:48;2023;2,9900;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;30-07-24 11:15;2024;3,0300;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;31-07-24 13:12;2024;3,0300;Stropersen;Straw baling;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;06-08-24 07:46;2024;3,0300;Woelen;Sub-soil;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;17-09-24 15:17;2024;3,0300;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 05;10-10-23 11:48;2023;2,9900;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;05-09-24 19:36;2024;2,8000;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;10-10-23 11:48;2023;2,8200;Cultivatoren;Cultivator;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;30-07-24 11:15;2024;2,8000;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;31-07-24 13:12;2024;2,8000;Stropersen;Straw baling;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;06-08-24 07:46;2024;2,8000;Woelen;Sub-soil;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;17-09-24 15:17;2024;2,8000;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 06;10-10-23 11:48;2023;2,8200;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 07;24-04-24 18:24;2024;3,3521;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;27-08-24 13:19;2024;3,3500;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;02-05-24 13:38;2024;3,3521;Eggen;Harrowing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;13-06-24 17:42;2024;3,3500;Eggen;Harrowing;1;Colza;Main crop;;;;;NL;Unifarm
+;Haarweg 07;30-04-24 16:06;2024;3,3521;Grondbewerken (algemeen);Harrowing;1;Colza;Main crop;;;;;NL;Unifarm
+;Haarweg 07;02-05-24 14:00;2024;3,3521;Grondbewerken (algemeen);Harrowing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;22-08-24 20:20;2024;3,3500;Klepelen;Mowing;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;10-09-24 16:48;2024;3,3500;Zaaien;Sowing;2;Lucerne/grass;Cover crop;;;;;NL;Unifarm
+;Haarweg 07;01-05-24 17:11;2024;3,3521;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 07;02-10-23 16:03;2023;3,3500;Zaaien;Sowing;2;Colza;Main crop;;;;;NL;Unifarm
+;Haarweg 08;05-09-24 19:36;2024;0,5955;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 08;04-10-23 13:24;2023;0,5900;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 08;09-07-24 18:00;2024;0,5955;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 08;10-09-24 07:29;2024;0,5955;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 08;03-10-23 16:01;2023;0,5900;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 09;05-09-24 19:36;2024;1,8973;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 09;04-10-23 13:24;2023;1,8900;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 09;09-07-24 18:00;2024;1,8973;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 09;10-09-24 07:29;2024;1,8973;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 09;04-10-23 16:01;2023;1,8900;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Haarweg 10;24-10-24 21:32;2024;1,1300;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;22-10-24 07:19;2024;1,1300;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;23-10-24 13:45;2024;1,1300;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;10-04-24 07:57;2024;1,1300;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;15-04-24 14:26;2024;1,1300;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;15-04-24 14:26;2024;1,1300;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 10;08-11-24 15:25;2024;1,1300;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Haarweg 11;24-10-24 21:30;2024;2,4700;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;26-10-23 11:54;2023;2,4200;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;25-10-22 11:15;2023;2,4200;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;12-06-23 16:48;2023;2,4200;Rollen of slepen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;22-10-24 07:19;2024;2,4700;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;23-10-24 13:45;2024;2,4700;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;10-04-24 07:57;2024;2,4661;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;11-04-24 16:28;2024;2,4661;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;24-05-23 07:34;2023;2,4200;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;08-06-23 13:26;2023;2,4200;Zaaibedcombinatie;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;11-04-24 16:28;2024;2,4661;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 11;25-05-23 15:35;2023;2,4200;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 11;08-11-24 15:25;2024;2,4700;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Haarweg 11;12-06-23 15:01;2023;2,4200;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Haarweg 12;24-10-24 21:32;2024;1,8100;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;26-10-23 11:54;2023;1,8180;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;24-10-24 21:30;2024;1,8100;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;15-11-22 07:59;2023;2,4100;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;12-06-23 16:48;2023;1,8180;Rollen of slepen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;22-10-24 07:19;2024;1,8100;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;23-10-24 13:45;2024;1,8100;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;11-04-24 16:28;2024;1,8100;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;24-05-23 07:34;2023;1,8180;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;08-06-23 13:26;2023;1,8180;Zaaibedcombinatie;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;11-04-24 16:28;2024;1,8100;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 12;25-05-23 15:35;2023;1,8180;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 12;12-06-23 15:01;2023;1,8180;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Haarweg 13;24-10-24 21:32;2024;2,9600;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;25-07-23 16:43;2023;2,9903;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 13;19-01-24 07:51;2024;2,9632;Ploegen;Ploughing;1;Trio cover crop;Cover crop;;;;;NL;Unifarm
+;Haarweg 13;24-10-24 21:30;2024;2,9600;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;05-11-24 13:30;2024;2,9600;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;06-11-24 08:32;2024;2,9600;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;23-10-24 13:45;2024;2,9600;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;15-04-24 14:26;2024;2,9600;Rotorkopeggen;Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;15-09-23 16:59;2023;2,9600;Zaaien;Sowing;2;Trio cover crop;Cover crop;;;;;NL;Unifarm
+;Haarweg 13;15-04-24 14:26;2024;2,9600;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Haarweg 13;02-11-22 07:25;2023;2,9600;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Haarweg 13;05-11-24 16:33;2024;2,9600;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Hoge Hoef 01;24-09-24 17:12;2024;1,9000;Cultivatoren;Cultivator;1;Fodder radish;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 01;14-08-23 16:23;2023;0,8900;Maaidorsen;Harvesting;3;Summer wheat;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 01;08-04-24 07:40;2024;1,9000;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 01;05-04-23 16:50;2023;0,8900;Ploegen;Ploughing;1;Summer wheat;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 01;20-09-24 07:49;2024;1,9000;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 01;26-09-24 16:09;2024;1,9000;Zaaien;Sowing;2;Fodder radish;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 01;28-08-23 09:21;2023;0,8900;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 01;08-04-24 15:09;2024;1,9000;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 01;05-04-23 16:48;2023;0,8900;Zaaien;Sowing;2;Summer wheat;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 02;17-05-23 07:15;2023;2;Grondbewerken (algemeen);Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 02;26-09-23 07:38;2023;2;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 02;12-04-23 07:28;2023;2;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 02;22-05-23 12:55;2023;2;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;21-05-24 11:08;2024;1,4812;Bereiden zaai/poot/plantbed (algemeen);Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;04-05-23 09:52;2023;1,8700;Bereiden zaai/poot/plantbed (algemeen);Harrowing;1;Faba bean;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;11-08-23 08:26;2023;1,8700;Maaidorsen;Harvesting;3;Faba bean;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;24-08-23 08:23;2023;1,8700;Maaidorsen;Harvesting;3;Faba bean;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;29-04-24 15:28;2024;1,4812;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;12-04-23 07:30;2023;1,8700;Ploegen;Ploughing;1;Faba bean;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;21-05-24 14:07;2024;1,4812;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;04-05-23 17:29;2023;1,8700;Zaaien;Sowing;2;Faba bean;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 04;14-10-24 15:54;2024;1,4812;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Hoge Hoef 04;25-05-23 08:50;2023;1,8700;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Hoge Hoef 03;14-08-24 14:02;2024;1,9700;Cultivatoren;Cultivator;1;Buckwheat, fodder radish;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 03;08-08-24 15:00;2024;1,9700;Eggen;Harrowing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;07-09-23 13:09;2023;1,9700;Maaidorsen;Harvesting;3;Lupine;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;09-07-24 11:00;2024;1,9700;Oogsten;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;12-04-23 07:30;2023;1,9700;Ploegen;Ploughing;1;Lupine;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;07-11-23 09:32;2023;1,9700;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;15-08-24 14:02;2024;1,9700;Zaaien;Sowing;2;Buckwheat, fodder radish;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 03;27-08-24 07:13;2024;1,9700;Zaaien;Sowing;2;Buckwheat, fodder radish;Cover crop;;;;;NL;Unifarm
+;Hoge Hoef 03;04-05-23 11:00;2023;1,9700;Zaaien;Sowing;2;Lupine;Main crop;;;;;NL;Unifarm
+;Hoge Hoef 03;17-05-23 16:44;2023;1,9700;Zaaien;Sowing;2;Lupine;Undersowing;;;;;NL;Unifarm
+;Kievit;12-07-23 16:12;2023;1,9738;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Kievit;24-09-24 14:03;2024;1,9142;Eggen;Harrowing;1;Green manure agrifirm;Cover crop;;;;;NL;Unifarm
+;Kievit;10-07-23 11:22;2023;1,9738;Maaidorsen;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Kievit;29-04-24 17:27;2024;2,0730;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Kievit;02-05-24 10:14;2024;2,0730;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Kievit;30-09-24 10:05;2024;1,9142;Zaaien;Sowing;2;Green manure agrifirm;Cover crop;;;;;NL;Unifarm
+;Kievit;01-08-23 16:14;2023;1,9738;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Kievit;02-05-24 08:19;2024;2,0730;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Kievit;07-10-22 15:51;2023;1,9738;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;28-05-24 19:14;2024;2,1500;Aanaarden;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;28-05-24 19:14;2024;2,1500;Aanaarden/frezen;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;07-11-24 07:58;2024;2,1500;Eggen;Harrowing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;31-10-24 13:49;2024;0,2000;Loofklappen;Aboveground removal;3;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;18-07-23 16:16;2023;2,0628;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;05-11-24 15:31;2024;2,1500;Oogsten;Harvesting;3;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;28-10-22 15:25;2023;2,0628;Ploegen;Ploughing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;29-04-24 17:27;2024;2,0600;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;10-05-24 07:23;2024;2,1500;Poten;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;06-11-24 18:11;2024;2,1500;Woelen;Sub-soil;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;15-08-23 16:32;2023;2,0628;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;28-10-22 15:25;2023;2,0628;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Kleine Dijkgraaf;07-11-24 15:00;2024;2,1500;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;KO 04;10-06-24 07:54;2024;3,4905;Aanaarden/frezen;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;KO 04;07-11-24 08:30;2024;3,4905;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;KO 04;12-06-24 12:45;2024;3,4905;Zaaien;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;LA 07;31-07-24 13:26;2024;3,9400;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 07;04-10-23 12:02;2023;2,6200;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;LA 07;18-01-24 07:55;2024;3,9400;Ploegen;Ploughing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 07;19-01-24 07:55;2024;3,9400;Rotorkopeggen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 07;19-05-23 14:21;2023;2,6200;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;LA 07;06-08-24 07:46;2024;3,9400;Woelen;Sub-soil;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 07;28-10-22 15:28;2022;2,6131;Woelen;Sub-soil;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 07;16-08-24 07:42;2024;3,9400;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 07;13-07-23 14:45;2023;2,6200;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 07;19-01-24 07:55;2024;3,9400;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 07;05-06-23 13:55;2023;2,6200;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;LA 08;14-05-24 15:18;2024;3,8900;Bereiden zaai/poot/plantbed (algemeen);Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 08;09-01-24 07:56;2024;3,8900;Cultivatoren;Cultivator;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 08;07-10-24 07:20;2024;3,8900;Cultivatoren;Cultivator;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 08;10-08-23 18:26;2023;0,4300;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 08;17-10-24 07:55;2024;2,5;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 08;27-10-22 15:22;2023;3,9981;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 08;27-09-24 12:00;2024;3,8900;Rooien;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 08;17-10-24 07:20;2024;2,5;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 08;13-07-23 14:45;2023;3,9981;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 08;15-09-23 16:59;2023;3,9981;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;LA 08;14-05-24 15:18;2024;3,8900;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;LA 08;27-10-22 15:22;2023;3,9981;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;LA 08;15-11-24 16:51;2024;3,8900;Zaaien;Sowing;2;Cover crop;Undersowing;;;;;NL;Unifarm
+;Loesemers;07-02-23 11:45;2023;3,6400;Grondbewerken (algemeen);Harrowing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Loesemers;04-10-23 09:29;2023;3,6400;Oogsten;Harvesting;3;Sugar beet;Main crop;;;;;NL;Unifarm
+;Loesemers;12-04-23 07:30;2023;3,6400;Ploegen;Ploughing;1;Sugar beet;Main crop;;;;;NL;Unifarm
+;Loesemers;13-07-23 14:45;2023;3,6400;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Loesemers;16-10-23 14:27;2023;3,6400;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Loesemers;18-04-23 16:22;2023;3,6400;Zaaien;Sowing;2;Sugar beet;Main crop;;;;;NL;Unifarm
+;Loesemers;27-05-24 07:24;2024;2,8898;Aanaarden;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Loesemers;07-11-24 13:56;2024;2,8898;Eggen;Harrowing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Loesemers;31-10-24 13:49;2024;2,8898;Loofklappen;Aboveground removal;3;Potatoes;Main crop;;;;;NL;Unifarm
+;Loesemers;14-03-24 15:30;2024;0,0142;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Loesemers;10-05-24 07:26;2024;2,8898;Poten;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;24-07-23 16:18;2023;2,9850;Eggen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;26-06-24 14:06;2024;2,9696;Eggen;Harrowing;1;Corn;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;18-07-23 16:17;2023;2,9850;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;13-05-24 19:26;2024;2,9696;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 02;10-08-23 16:19;2023;2,9850;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 02;01-11-22 07:41;2023;2,9850;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;25-06-24 08:25;2024;2,9696;Zaaien;Sowing;2;Corn;Main crop;;;;;NL;Unifarm
+;Meenthoeve 02;25-07-24 10:37;2024;2,9696;Zaaien;Sowing;2;Corn;Undersowing;;;;;NL;Unifarm
+;Meenthoeve 03;24-07-23 16:18;2023;3,0316;Eggen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 03;24-07-23 16:16;2023;3,0316;Grondbewerken (algemeen);Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 03;18-07-23 16:17;2023;3,0316;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 03;13-05-24 19:26;2024;3,0300;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 03;10-08-23 16:19;2023;3,0316;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 03;25-06-24 08:25;2024;3,0300;Zaaien;Sowing;2;Corn;Main crop;;;;;NL;Unifarm
+;Meenthoeve 03;01-11-22 07:41;2023;3,0316;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 03;25-07-24 10:37;2024;3,0300;Zaaien;Sowing;2;Corn;Undersowing;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;22-03-24 07:29;2024;1,6200;Cultivatoren;Cultivator;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;29-08-24 15:18;2024;1,6200;Cultivatoren;Cultivator;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;17-07-24 08:36;2024;1,6200;Frezen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;17-05-23 15:00;2023;1,6200;Grondbewerken (algemeen);Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;04-10-23 11:53;2023;1,6200;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;14-05-24 15:20;2024;1,6200;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;17-05-23 14:00;2023;1,6200;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;23-09-24 13:57;2024;1,6200;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 04 Snijmais;23-05-23 08:57;2023;1,6200;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;24-07-23 16:18;2023;1,9000;Eggen;Harrowing;1;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;18-07-23 16:17;2023;1,9000;Maaidorsen;Harvesting;3;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;13-05-24 19:26;2024;1,9000;Ploegen;Ploughing;1;Corn;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;10-08-23 16:19;2023;1,9000;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;25-06-24 08:25;2024;1,9000;Zaaien;Sowing;2;Corn;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;01-11-22 07:41;2023;1,9000;Zaaien;Sowing;2;Winter wheat;Main crop;;;;;NL;Unifarm
+;Meenthoeve 04 Wintertarwe;25-07-24 10:37;2024;1,9000;Zaaien;Sowing;2;Corn;Undersowing;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;21-03-24 14:30;2024;3,5600;Cultivatoren;Cultivator;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;29-08-24 15:18;2024;3,5600;Cultivatoren;Cultivator;1;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;05-09-24 19:36;2024;3,5600;Cultivatoren;Cultivator;1;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;17-07-24 08:36;2024;3,5600;Frezen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;14-05-24 15:20;2024;3,5600;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;23-09-24 13:57;2024;3,5600;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;15-04-24 07:43;2024;3,5600;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;21-03-24 14:30;2024;3,5600;Cultivatoren;Cultivator;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;29-08-24 15:18;2024;3,5600;Cultivatoren;Cultivator;1;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;05-09-24 19:36;2024;3,5600;Cultivatoren;Cultivator;1;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;17-07-24 08:36;2024;3,5600;Frezen;Harrowing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;14-05-24 15:20;2024;3,5600;Ploegen;Ploughing;1;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;23-09-24 13:57;2024;3,5600;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;15-04-24 07:43;2024;3,5600;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;01-05-23 08:29;2023;1,5200;Ploegen;Ploughing;1;Potatoes;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;02-05-23 08:29;2023;1,5200;Poten;Sowing;2;Potatoes;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Aardappelen;13-07-23 14:45;2023;1,5200;Zaaien;Sowing;2;Herb strips;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;17-05-23 13:30;2023;2,0227;Grondbewerken (algemeen);Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;04-10-23 11:53;2023;2,0227;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;17-05-23 14:00;2023;2,0227;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 05 Mais;23-05-23 08:57;2023;2,0227;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Meenthoeve 06;11-07-24 11:03;2024;3,4500;Maaidorsen;Harvesting;3;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 06;23-11-23 15:41;2023;2,9500;Rotorkopeggen;Harrowing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 06;09-08-24 15:28;2024;3,4500;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 06;23-09-24 13:57;2024;3,4500;Zaaien;Sowing;2;Mix trio greenmanure;Cover crop;;;;;NL;Unifarm
+;Meenthoeve 06;15-04-24 07:43;2024;3,4500;Zaaien;Sowing;2;Summer barley;Main crop;;;;;NL;Unifarm
+;Meenthoeve 06;23-11-23 15:41;2023;2,9500;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;NE 02;18-01-24 08:38;2024;1,7900;Cultivatoren;Cultivator;1;Ryegrass, italian;Main crop;;;;;NL;Unifarm
+;NE 02;06-06-24 07:43;2024;1,7900;Frezen;Harrowing;1;Ryegrass, italian;Main crop;;;;;NL;Unifarm
+;NE 02;01-08-24 07:54;2024;1,7900;Zaaien;Sowing;2;Ryegrass, italian;Main crop;;;;;NL;Unifarm
+;NE 03;26-08-24 10:03;2024;1,9800;Klepelen;Mowing;3;Cover crop;Cover crop;;;;;NL;Unifarm
+;NE 03;10-07-23 11:22;2023;2,0300;Maaidorsen;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;NE 03;27-08-24 15:51;2024;1,9800;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;NE 03;01-08-23 16:12;2023;1,9800;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;NE 03;03-09-24 07:59;2024;1,9800;Zaaien;Sowing;2;Colza;Main crop;;;;;NL;Unifarm
+;NE 03;11-10-22 15:47;2023;1,9800;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;NE 05;25-09-23 07:41;2023;0,5734;Eggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;NE 05;26-09-23 07:38;2023;0,5734;Oogsten;Harvesting;3;Corn silage;Main crop;;;;;NL;Unifarm
+;NE 05;16-05-23 17:58;2023;0,5734;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;NE 05;25-05-23 15:45;2023;0,5734;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;NE 06;10-07-23 11:22;2023;1,5715;Maaidorsen;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;NE 06;27-08-24 09:30;2024;1,5500;Ploegen;Ploughing;1;Cover crop;Cover crop;;;;;NL;Unifarm
+;NE 06;11-09-23 16:20;2023;1,5500;Zaaien;Sowing;2;Cover crop;Cover crop;;;;;NL;Unifarm
+;NE 06;03-09-24 07:59;2024;1,5500;Zaaien;Sowing;2;Colza;Main crop;;;;;NL;Unifarm
+;NE 06;11-10-22 15:47;2023;1,5500;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
+;NE 1 A;18-01-24 08:38;2024;1,6022;Cultivatoren;Cultivator;1;Ryegrass, italian;Main crop;;;;;NL;Unifarm
+;NE 1 A;01-08-24 07:54;2024;1,6022;Zaaien;Sowing;2;Ryegrass, italian;Main crop;;;;;NL;Unifarm
+;Well;12-07-23 16:12;2023;1,6725;Cultivatoren;Cultivator;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Well;24-09-24 14:03;2024;1,2442;Eggen;Harrowing;1;Agrifirm bio divers;Cover crop;;;;;NL;Unifarm
+;Well;10-07-23 11:22;2023;1,6725;Maaidorsen;Harvesting;3;Winter barley;Main crop;;;;;NL;Unifarm
+;Well;29-04-24 17:26;2024;1,2400;Ploegen;Ploughing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Well;15-08-23 10:30;2023;1,4612;Ploegen;Ploughing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Well;06-09-23 10:30;2023;1,4612;Ploegen;Ploughing;1;Winter barley;Main crop;;;;;NL;Unifarm
+;Well;02-05-24 10:14;2024;1,2400;Rotorkopeggen;Harrowing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Well;20-06-24 16:39;2024;0,3000;Schoffelen;Hoeing;1;Corn silage;Main crop;;;;;NL;Unifarm
+;Well;30-09-24 10:05;2024;1,2442;Zaaien;Sowing;2;Agrifirm bio divers;Cover crop;;;;;NL;Unifarm
+;Well;02-05-24 08:19;2024;1,2400;Zaaien;Sowing;2;Corn silage;Main crop;;;;;NL;Unifarm
+;Well;06-10-22 07:49;2023;1,4612;Zaaien;Sowing;2;Winter barley;Main crop;;;;;NL;Unifarm
