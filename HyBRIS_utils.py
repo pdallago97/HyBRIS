@@ -51,13 +51,13 @@ def add_vis_radar(df):
         df[band] = pd.to_numeric(df[band], errors='coerce')
     
     # # Convert dB to linear scale
-    # vv_lin = 10 ** (df['VV'] / 10)
-    # vh_lin = 10 ** (df['VH'] / 10)
+    vv_lin = 10 ** (df['VV'] / 10)
+    vh_lin = 10 ** (df['VH'] / 10)
 
     # Calculate Radar Vegetation Indices
     with np.errstate(divide='ignore', invalid='ignore'):
-        df['RVI'] = normalize_percentiles((4 * df['VH']) - (df['VV'] + df['VH']))
-        #df["RVI"] = normalize_percentiles(4 * vh_lin / (vv_lin + vh_lin))
+        #df['RVI'] = normalize_percentiles((4 * df['VH']) - (df['VV'] + df['VH']))
+        df["RVI"] = normalize_percentiles(4 * vh_lin / (vv_lin + vh_lin))
         df['VH_VV'] = normalize_percentiles(df['VH'] - df['VV'])
         df['VV_VH'] = normalize_percentiles(df['VV'] - df['VH'])
         df['RI2'] = normalize_percentiles((df['VV'] - df['VH']) / (df['VV'] + df['VH']))
@@ -611,11 +611,11 @@ def add_predictions(hybris, predictions):
             predictions.loc[peak : harvest_after[0], "in_growing_season"] = True
 
 
-    # #Filter out tillage predictions which are coincident with an harvest or a sowing event
+    # #Keep tillage predictions which are coincident with an harvest or a sowing event
     # #Filter out tillage predicions which are inside a growing season
     mask = (
         (predictions["pred_type"] == "pred_tillage") &
-        ((predictions["coincident"] == True) | (predictions["in_growing_season"] == True))
+        (predictions["in_growing_season"] == True)
     )
 
     predictions.loc[mask, "pred_type"] = 'pred_tillage_excluded'
