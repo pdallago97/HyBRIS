@@ -18,6 +18,11 @@ bandsusedS1 = ['VV', 'VH', 'angle']
 s2 = openSentinel2file(s2_path, bandsused)
 s2 = add_vis(s2)
 
+print("--- Sentinel-2 data ---")
+print(s2.head())
+print(s2.columns.tolist())
+print("length of Sentinel-2 data:", len(s2))
+
 #and Sentinel-1 files, remove NA, merge observation on the same day, select most present orbit, and add Vegetation indices
 s1 = openSentinel1file(s1_path, bandsusedS1)
 
@@ -31,6 +36,11 @@ s1_asc = add_vis_radar(selectOrbit(s1_asc, selectMostPresent=True))
 
 s1 = pd.concat([s1_des, s1_asc])
 
+print("--- Sentinel-1 data ---")
+print(s1.head())
+print(s1.columns.tolist())
+print("length of Sentinel-1 data:", len(s1))
+
 #specify bands for S1 and S2 fusion
 s2_band = "BSI"
 s1_band = "VV_VH"
@@ -41,8 +51,10 @@ pp['daily_index'] = 1 - pp['daily_index']
 
 #Fuse S1 and S2 time series based on given bands(similar to daily_index_with_contributions, but specifically for HyBRIS)
 hybris = calculate_hybris(s1, s2)
+print("--- HyBRIS data ---")
 print(hybris.head())
 print(hybris.columns.tolist())
+print("length of HyBRIS data:", len(hybris))
 
 #define start and end date for examples
 start_date = pd.to_datetime("2017-01-01")
@@ -61,6 +73,14 @@ plot_hybris(hybris[(hybris["date"] > start_date) & (hybris["date"] < end_date)],
             plot_dormant=False,
             add_groundtruth=False,
             ax = axes, date_col = "date")
+
+plt.tight_layout()
+plt.show()
+
+####PLOT FIGURE WITH 1 PANELS
+fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(11.5, 4.1), sharex=True)
+plot_time_series(hybris["s1_contribution"], hybris['date'], color='blue', title="S1 contribution", show=False, alpha=0.5, marker='o', ax=axes)
+plot_time_series(hybris["s2_contribution"], hybris['date'], color='green', title="S2 contribution", show=False, alpha=0.5, marker='o', ax=axes)
 
 plt.tight_layout()
 plt.show()

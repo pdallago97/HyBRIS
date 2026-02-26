@@ -274,7 +274,7 @@ def daily_index_with_contributions(s2df, s1df, maxDiff=30, bandS2='NDVI', bandS1
     return daily_data
 
 
-def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH'):
+def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=30):
 
     """
     Calculate the Hybris index using Sentinel-1 and Sentinel-2 data.
@@ -288,7 +288,7 @@ def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH'):
     """
 
     #Calculate fused index using BSI and VV_VH
-    hybris = daily_index_with_contributions(s2, s1, bandS2 = bandS2, bandS1= bandS1)
+    hybris = daily_index_with_contributions(s2, s1, bandS2 = bandS2, bandS1= bandS1, maxDiff=maxDiff)
 
     #Invert index to resemble a vegetation index
     hybris['daily_index'] = 1 - hybris['daily_index']
