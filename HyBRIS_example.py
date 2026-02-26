@@ -63,6 +63,9 @@ hybris = merge_with_GT(hybris, field) #combine everything in one long dataframe
 start_date = pd.to_datetime("2017-01-01")
 end_date = pd.to_datetime("2025-01-01")
 
+print(hybris.head())
+print(hybris.columns.tolist())
+
 #Filter all data to the same time period for easier plotting
 field_example = filter_by_date(field, start_date=start_date, end_date=end_date, date_column="Date")
 s2_example = filter_by_date(s2, start_date=start_date, end_date=end_date)
@@ -77,7 +80,7 @@ plot_hybris(hybris[(hybris["Date"] > start_date) & (hybris["Date"] < end_date)],
             plot_tillages=False,
             plot_dormant=True,
             add_groundtruth=True,
-            ax = axes)
+            ax = axes, date_col = "Date")
 
 plt.tight_layout()
 plt.show()
@@ -108,11 +111,11 @@ plot_time_series(pp_example['daily_index'], pp_example['date'], color='brown',
 
 # --- Third panel: plot_hybris without groundtruth
 plot_hybris(hybris[(hybris["Date"] > start_date) & (hybris["Date"] < end_date)],
-            plot_tillages=True, plot_dormant=True, add_groundtruth=False, ax=axes[2])
+            plot_tillages=True, plot_dormant=True, add_groundtruth=False, ax=axes[2], date_col="Date")
 
 # --- Fourth panel: plot_hybris with groundtruth
 plot_hybris(hybris[(hybris["Date"] > start_date) & (hybris["Date"] < end_date)], add_pred_sow_harv = False,
-            plot_tillages=False, plot_dormant=False, add_groundtruth=True, ax=axes[3])
+            plot_tillages=False, plot_dormant=False, add_groundtruth=True, ax=axes[3], date_col="Date")
 
 # Optional: tighten layout
 plt.tight_layout()

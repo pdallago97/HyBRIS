@@ -667,17 +667,17 @@ def filter_by_date(df, start_date, end_date, date_column='date'):
 
 ######### VISUALIZATION #########
 
-def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None):
+def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date'):
     
     if ax is None:
         fig, ax = plt.subplots(figsize=(12, 5))
         
     # Plot smoothed time series
-    ax.plot(hybris["Date"], hybris["daily_index_smooth"], label="Smoothed", color="brown")
+    ax.plot(hybris[date_col], hybris["daily_index_smooth"], label="Smoothed", color="brown")
 
     # Plot raw time series with transparency
     if "daily_index" in hybris.columns:
-        ax.plot(hybris["Date"], hybris["daily_index"], label="Unsmoothed", color="brown", alpha=0.3)
+        ax.plot(hybris[date_col], hybris["daily_index"], label="Unsmoothed", color="brown", alpha=0.3)
 
     
         # Handle tillage points
@@ -686,7 +686,7 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
                 tillage_all = hybris[hybris["pred_type"] == "pred_tillage"]
             
                 #Plot other tillages
-                ax.scatter(tillage_all["Date"], tillage_all["Value"],
+                ax.scatter(tillage_all[date_col], tillage_all["Value"],
                         label="Predicted tillage",
                         color="brown", marker="s", zorder=5)
     
@@ -728,7 +728,7 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
             # Handle normal phenology (sowing, peak, harvest)
             for typ in ["pred_sowing", "peak", "pred_harvest"]:
                 group = hybris[hybris["pred_type"] == typ]
-                ax.scatter(group["Date"], group["Value"],
+                ax.scatter(group[date_col], group["Value"],
                         label=lebel_typ[typ],
                         color=type_colors.get(typ, "blue"),
                         marker=type_style[typ],
@@ -737,7 +737,7 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
     # Plot dormant periods (from harvest to next sowing)
     if plot_dormant:
         ymin, ymax = ax.get_ylim()          # vertical span of the plot
-        ax.fill_between(hybris["Date"],
+        ax.fill_between(hybris[date_col],
                         -0, 1,         # shade full height
                         where=~hybris["in_growing_season"],
                         color="gray", alpha=0.3,
