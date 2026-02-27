@@ -1,7 +1,5 @@
 from HyBRIS_utils import *
 
-#load data
-
 #Ground truth data with sowing and harvest dates
 field = pd.read_csv('Example/GroundTruth_example.csv')
 field['Date'] = pd.to_datetime(field['Date']) #make sure the date column is in datetime format
@@ -60,8 +58,8 @@ hybris = add_predictions(hybris, predictions)
 hybris = merge_with_GT(hybris, field) #combine everything in one long dataframe
 
 #define start and end date for examples
-start_date = pd.to_datetime("2017-01-01")
-end_date = pd.to_datetime("2025-01-01")
+start_date = pd.to_datetime("2022-01-01")
+end_date = pd.to_datetime("2023-01-01")
 
 print(hybris.head())
 print(hybris.columns.tolist())
@@ -72,6 +70,9 @@ s2_example = filter_by_date(s2, start_date=start_date, end_date=end_date)
 s1_example = filter_by_date(s1, start_date=start_date, end_date=end_date)
 pp_example = filter_by_date(pp, start_date=start_date, end_date=end_date)
 minima_example = filter_by_date(minima, start_date=start_date, end_date=end_date, date_column="Date")
+
+print(len(s1_example))
+print(len(s2_example))
 
 ####PLOT FIGURE WITH 1 PANELS
 fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(11.5, 4.1), sharex=True)

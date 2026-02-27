@@ -667,17 +667,17 @@ def filter_by_date(df, start_date, end_date, date_column='date'):
 
 ######### VISUALIZATION #########
 
-def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date'):
+def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date', color = 'brown', legend = True):
     
     if ax is None:
         fig, ax = plt.subplots(figsize=(12, 5))
         
     # Plot smoothed time series
-    ax.plot(hybris[date_col], hybris["daily_index_smooth"], label="Smoothed", color="brown")
+    ax.plot(hybris[date_col], hybris["daily_index_smooth"], label="Smoothed", color=color)
 
     # Plot raw time series with transparency
     if "daily_index" in hybris.columns:
-        ax.plot(hybris[date_col], hybris["daily_index"], label="Unsmoothed", color="brown", alpha=0.3)
+        ax.plot(hybris[date_col], hybris["daily_index"], label="Unsmoothed", color=color, alpha=0.3)
 
     
         # Handle tillage points
@@ -747,10 +747,11 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
     ax.set_xlabel("")
     ax.set_ylabel("")
     ax.set_title("")
-    ax.legend(
-    loc='upper left',        # Position relative to bbox
-    bbox_to_anchor=(1.0, 0.8) # (x, y) coordinates relative to the axes
-    )
+    if legend:
+        ax.legend(
+        loc='upper left',        # Position relative to bbox
+        bbox_to_anchor=(1.0, 0.8) # (x, y) coordinates relative to the axes
+        )
     ax.grid(False)
    
     return ax
@@ -759,7 +760,7 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
 def plot_time_series(values, dates, groundtruth=None, season_boundaries=None,
                       tillages = None, tillage_windows = None, dormant_periods = None, color='gray',
                         title="Time Series", add = False, show = True, alpha = 1, marker = None,
-                        ax = None):
+                        ax = None, legend = True):
     """
     Plots a time series and optionally adds vertical lines for events in the groundtruth DataFrame.
     It also overlays detected Start of Season (SOS), End of Season (EOS), and Peak points.
@@ -856,7 +857,8 @@ def plot_time_series(values, dates, groundtruth=None, season_boundaries=None,
             sos = pd.to_datetime(row['Sowing Date'])
             ax.axvspan(eos, sos, color="gray", alpha=0.3, label="Dormant Period" if i == 0 else "")
 
-    ax.legend(loc='upper left', bbox_to_anchor=(1.0, 0.5)) # (x, y) coordinates relative to the axes)
+    if legend:
+        ax.legend(loc='upper left', bbox_to_anchor=(1.0, 0.5)) # (x, y) coordinates relative to the axes)
     ax.set_xlabel("")
     ax.set_ylabel("")
     ax.set_title("")
