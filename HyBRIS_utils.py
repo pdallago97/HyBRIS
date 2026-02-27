@@ -667,17 +667,17 @@ def filter_by_date(df, start_date, end_date, date_column='date'):
 
 ######### VISUALIZATION #########
 
-def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date', color = 'brown', legend = True):
+def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date', color = 'brown', legend = True, alpha_smooth = 1, alpha_raw = 0.3):
     
     if ax is None:
         fig, ax = plt.subplots(figsize=(12, 5))
         
     # Plot smoothed time series
-    ax.plot(hybris[date_col], hybris["daily_index_smooth"], label="Smoothed", color=color)
+    ax.plot(hybris[date_col], hybris["daily_index_smooth"], label="Smoothed", color=color, alpha = alpha_smooth)
 
     # Plot raw time series with transparency
     if "daily_index" in hybris.columns:
-        ax.plot(hybris[date_col], hybris["daily_index"], label="Unsmoothed", color=color, alpha=0.3)
+        ax.plot(hybris[date_col], hybris["daily_index"], label="Unsmoothed", color=color, alpha=alpha_raw)
 
     
         # Handle tillage points

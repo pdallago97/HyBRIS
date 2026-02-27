@@ -3,7 +3,7 @@ from HyBRIS_utils import *
 import pickle
 
 #load data
-save_dictionary = False # set to True to compute the dictionary with all combinations of observations (this can take a while), set to False to load the precomputed dictionary
+save_dictionary = True # set to True to compute the dictionary with all combinations of observations (this can take a while), set to False to load the precomputed dictionary
 
 
 #Ground truth data with sowing and harvest dates
@@ -57,7 +57,7 @@ hybris = calculate_hybris(s1, s2)
 print("--- HyBRIS data ---")
 print(hybris.head())
 print(hybris.columns.tolist())
-print("length of HyBRIS data:", len(hybris))
+print("length of HyBRIS data:", len(hybris.index))
 
 
 #define start and end date for examples
@@ -100,14 +100,33 @@ from functools import lru_cache
 
 @lru_cache(maxsize=None)
 def cached_hybris(s1_obs, s2_obs):
-    s1_sub = limit_observations(s1_example, s1_obs)
-    s2_sub = limit_observations(s2_example, s2_obs)
+    s2_cache = filter_by_date(s2_df, start_date=start_date, end_date=end_date)
+    s1_cache = filter_by_date(s1_df, start_date=start_date, end_date=end_date)
+
+    #open file
+    s1_sub = limit_observations(s1_cache, s1_obs)
+    s2_sub = limit_observations(s2_cache, s2_obs)
+
+    s2_sub = add_vis(s2_sub)
+    #Split ascending and descending orbits
+    s1_des_sub = s1_sub[s1_sub['orbit'] == 'DESCENDING']  # Select only descending orbits
+    s1_asc_sub = s1_sub[s1_sub['orbit'] == 'ASCENDING']  # Select only ascending orbits
+
+    # Select most present orbit and add radar vegetation index
+    s1_des_cache = add_vis_radar(selectOrbit(s1_des_sub, selectMostPresent=True))
+    s1_asc_cache = add_vis_radar(selectOrbit(s1_asc_sub, selectMostPresent=True))
+
+    s1_sub = pd.concat([s1_des_cache, s1_asc_cache])
+
     return calculate_hybris(s1_sub, s2_sub), s1_sub, s2_sub
 
 if save_dictionary: # set to True to compute the dictionary with all combinations of observations (this can take a while)
     precomputed = {}
-    for s1_obs in range(10, len(s1_example)+1, 2):
-        for s2_obs in range(5, len(s2_example)+1, 2):
+    s1_df = openSentinel1file(s1_path, bandsusedS1)
+    s2_df = openSentinel2file(s2_path, bandsused)
+
+    for s1_obs in range(40, len(s1_example)+1, 2):
+        for s2_obs in range(15, len(s2_example)+1, 2):
             precomputed[(s1_obs, s2_obs)] = cached_hybris(s1_obs, s2_obs)
 
     print(precomputed.keys())
@@ -121,6 +140,7 @@ else:
         precomputed = pickle.load(handle)
 
     print(precomputed.keys())
+    print("Total number of combinations:", len(precomputed.keys()))
 
 ####PLOT FIGURE WITH 1 PANELS
 #invert hybris for plotting
@@ -144,12 +164,30 @@ sm_s1 = ScalarMappable(norm=norm_s1, cmap=cmap_s1)
 sm_s2 = ScalarMappable(norm=norm_s2, cmap=cmap_s2)
 sm_h  = ScalarMappable(norm=norm_h, cmap=cmap_hybris)
 
-all_maxima = []
-all_minima = []
-
-fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(11.5, 4.1), sharex=True)
+fig, axes = plt.subplots(nrows=4, ncols=1, figsize=(11.5, 4.1), sharex=True)
 for (s1_obs, s2_obs), (hybris_sub, s1_sub, s2_sub) in precomputed.items():
+    add_sow_harv = False  # default to False
+    try:
+        #Find maxima and minima in the fused time series
+        maxima = find_maxima(hybris_sub) #Peaks of seasons
+        minima = find_minima(hybris_sub, distanceTillages=30, prominenceTillages=(0,1), height= None) #Sowing, harvest, tillage
 
+        #Identify growing seasons based on predicted minima
+        g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+
+        #Filter out small seasons (less than 60 days)
+        g_seasons = filter_small_seasons(g_seasons)
+
+        predictions = add_tillages(g_seasons, minima)
+
+        #Merge with predictions
+        hybris_sub = add_predictions(hybris_sub, predictions)
+        
+        # If all of the above succeeds, enable plotting of predicted sowing/harvest
+        add_sow_harv = True
+    except Exception as e:
+        print(f"Error processing combination S1: {s1_obs}, S2: {s2_obs}, Error: {e}")
+        continue
     # ---------- colors ----------
     color_s1 = cmap_s1(norm_s1(s1_obs))
     color_s2 = cmap_s2(norm_s2(s2_obs))
@@ -159,26 +197,39 @@ for (s1_obs, s2_obs), (hybris_sub, s1_sub, s2_sub) in precomputed.items():
         color_s2 = 'black'
         color_s1 = 'black'
 
-    plot_hybris(hybris_sub[(hybris_sub["date"] > start_date) & (hybris_sub["date"] < end_date)],
+    plot_hybris(hybris_sub[(hybris_sub["Date"] > start_date) & (hybris_sub["Date"] < end_date)],
                 add_pred_sow_harv = False,
                 plot_tillages=False,
                 plot_dormant=False,
                 add_groundtruth=False,
-                ax = axes[0], date_col = "date",
+                ax = axes[0], date_col = "Date",
                 color = color_h, # color based on number of observations
-                legend = False
+                legend = False,
+                alpha_raw=0, alpha_smooth=1
                 )
+    plot_hybris(hybris_sub[(hybris_sub["Date"] > start_date) & (hybris_sub["Date"] < end_date)],
+            add_pred_sow_harv = add_sow_harv,
+            plot_tillages=False,
+            plot_dormant=False,
+            add_groundtruth=False,
+            ax = axes[1], date_col = "Date",
+            color = color_h, # color based on number of observations
+            legend = False,
+            alpha_raw=1, alpha_smooth=0
+            )
     #add BSI and VV/VH time series to the plot
-    plot_time_series(s2_sub[s2_band], s2_sub['date'], color=color_s2, title=s2_band + f" (n={len(s2_sub)})", add=True,
-                    show=False, alpha=0.8, marker='o', ax=axes[1], legend = False)
-    plot_time_series(s1_sub[s1_band], s1_sub['date'], color=color_s1, title="VV/VH" + f" (n={len(s1_sub)})",
-                    add=True, show=False, alpha=0.8, marker='o', ax=axes[2], legend=False)
+    plot_time_series(1-s2_sub[s2_band], s2_sub['date'], color=color_s2, title="- " +s2_band + f" (n={len(s2_sub)})", add=True,
+                    show=False, alpha=0.8, marker='o', ax=axes[2], legend = False)
+    plot_time_series(1-s1_sub[s1_band], s1_sub['date'], color=color_s1, title="- VV/VH" + f" (n={len(s1_sub)})",
+                    add=True, show=False, alpha=0.8, marker='o', ax=axes[3], legend=False)
 
-fig.colorbar(sm_h, ax=axes[0], label="Total observations (S1 + S2)")
-fig.colorbar(sm_s2, ax=axes[1], label="Sentinel-2 observations")
-fig.colorbar(sm_s1, ax=axes[2], label="Sentinel-1 observations")
-axes[0].set_title("HyBRIS response to data availability")
-axes[1].set_title("Optical signal (BSI)")
-axes[2].set_title("Radar signal (VV/VH)")
+fig.colorbar(sm_h, ax=axes[0], label="Total observations (S1 + S2)                      ")
+fig.colorbar(sm_h, ax=axes[1], label="")
+fig.colorbar(sm_s2, ax=axes[2], label="Sentinel-2 observations")
+fig.colorbar(sm_s1, ax=axes[3], label="Sentinel-1 observations")
+axes[0].set_title("HyBRIS smoothed response to data availability")
+axes[1].set_title("HyBRIS unsmoothed response to data availability")
+axes[2].set_title("Optical signal (BSI)")
+axes[3].set_title("Radar signal (VV/VH)")
 plt.tight_layout()
 plt.show()
