@@ -26,27 +26,15 @@ Example/: contains the Sentinel 1 and 2 time series and the ground truth for an 
 -------------------------------------------------------------------------------------------------------------
 Calculation of a daily hybrid index
 
-In this exercise, two indices (one optical, one radar) sensitive to soil roughness and bare soil exposure are combined to detect sowing, harvesting, and tillage events: the VH/VV index from Sentinel-1, and the inverted Bare Soil Index (1 - BSI) from Sentinel-2. The normalization step ensures the values of BSIinv and VH/VV to be within the [0, 1] range.
+Here, two indices (one optical, one radar) sensitive to soil roughness and bare soil exposure are combined to detect sowing, harvesting, and tillage events: the inverted Bare Soil Index (1 - BSI) from Sentinel-2 (a) and the VH/VV index from Sentinel-1 (b). The normalization step ensures the values of BSIinv and VH/VV to be within the [0, 1] range.
 
-With this combination, we developed the daily Hybrid Bare Soil Radar Index (HyBRIS). To calculate HyBRIS for each day, a temporal window of ±12 days was adopted.  This window size ensures the inclusion of at least two radar acquisitions from the same orbit before and after the target day, given the 12-day revisit cycle of each orbit of Sentinel 1, and increases the likelihood of incorporating cloud-free optical observations during persistently cloudy periods.
+With this combination, we developed the daily Hybrid Bare Soil Radar Index (HyBRIS) (c). To calculate HyBRIS for each day, a temporal window of ±12 days was adopted.  This window size ensures the inclusion of at least two radar acquisitions from the same orbit before and after the target day, given the 12-day revisit cycle of each orbit of Sentinel 1, and increases the likelihood of incorporating cloud-free optical observations during persistently cloudy periods.
 
-The Sentinel-1 and -2 observations acquired within this window are considered (n), and aggregated with a weighted mean. Expanding the window had minimal impact on the aggregated index values, as the weighting mean reduces the influence of observations further from the target day. The weights (wi) of each Sentinel observation are calculated based on the inverse of the absolute difference in days between the target day (d) and the date of acquisition of the Sentinel image (i).
+The Sentinel-1 and -2 observations acquired within this window are considered, and aggregated with a weighted mean. Expanding the window had minimal impact on the aggregated index values, as the weighting mean reduces the influence of observations further from the target day.
 
 This way, images acquired closer to the target day have higher weights and contribute more to the fused index, while images acquired further from each day have lower weights. 
-Thus, the weighted mean becomes:
 
-![image](https://github.com/user-attachments/assets/94ad335f-03d1-4f03-9099-00dd3daea271)
-
-where:
-	X ̅_d is the value of the fused daily index at day d
-	n is the total number of images present in the temporal window d±12
-	X_i is the value of the Sentinel index at image date i, either BSI or VV/VH
-	w_i is the weight assigned to each Sentinel observation
-	The denominator is a normalization factor, consisting of the sum of all weights within the temporal window
-
-Next, a smoothed time series was calculated for HyBRIS and for each optical and radar
-index using a centered rolling mean with a window of ±15 days. Both smoothed and
-unsmoothed time series were then used to detect farming practices.
+Next, a smoothed time series was calculated for HyBRIS and for each optical and radar index using a centered rolling mean with a window of ±15 days. Both smoothed and unsmoothed time series were then used to detect farming practices.
 
 ![image](https://github.com/user-attachments/assets/960f70d4-cd5b-41f6-8327-59fe923ea94a)<img width="11693" height="5529" alt="Figure2" src="https://github.com/user-attachments/assets/6e7cb8b0-f6c0-493f-a0cd-da521e2e7a38" />
 
