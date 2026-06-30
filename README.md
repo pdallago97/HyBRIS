@@ -4,7 +4,7 @@ Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
 
 *Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research*
 
-Please refer to DOI for more information: https://doi.org/10.2139/ssrn.5580396 #paper under review#
+Please refer to DOI for more information: https://www.sciencedirect.com/science/article/pii/S0034425726003238
 
 -------------------------------------------------------------------------------------------------------------
 Summary
@@ -32,8 +32,6 @@ With this combination, we developed the daily Hybrid Bare Soil Radar Index (HyBR
 
 The Sentinel-1 and -2 observations acquired within this window are considered (n), and aggregated with a weighted mean. Expanding the window had minimal impact on the aggregated index values, as the weighting mean reduces the influence of observations further from the target day. The weights (wi) of each Sentinel observation are calculated based on the inverse of the absolute difference in days between the target day (d) and the date of acquisition of the Sentinel image (i).
 
-![image](https://github.com/user-attachments/assets/960f70d4-cd5b-41f6-8327-59fe923ea94a)
-
 This way, images acquired closer to the target day have higher weights and contribute more to the fused index, while images acquired further from each day have lower weights. 
 Thus, the weighted mean becomes:
 
@@ -41,7 +39,7 @@ Thus, the weighted mean becomes:
 
 where:
 	X ̅_d is the value of the fused daily index at day d
-	n is the total number of images present in the temporal window d±30
+	n is the total number of images present in the temporal window d±12
 	X_i is the value of the Sentinel index at image date i, either BSI or VV/VH
 	w_i is the weight assigned to each Sentinel observation
 	The denominator is a normalization factor, consisting of the sum of all weights within the temporal window
@@ -50,6 +48,6 @@ Next, a smoothed time series was calculated for HyBRIS and for each optical and 
 index using a centered rolling mean with a window of ±15 days. Both smoothed and
 unsmoothed time series were then used to detect farming practices.
 
-![image](https://github.com/user-attachments/assets/4636ba3f-c3d8-436c-901b-5cdde1ebccb1)
+![image](https://github.com/user-attachments/assets/960f70d4-cd5b-41f6-8327-59fe923ea94a)<img width="11693" height="5529" alt="Figure2" src="https://github.com/user-attachments/assets/6e7cb8b0-f6c0-493f-a0cd-da521e2e7a38" />
 
 Note that the considered length of the time series influences the amplitude of the time series itself. This is due to the normalization process done with percentiles (0.02-0.98) within the observation period.
