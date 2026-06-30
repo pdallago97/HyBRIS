@@ -3,8 +3,7 @@ from HyBRIS_utils import *
 import pickle
 
 #load data
-save_dictionary = True # set to True to compute the dictionary with all combinations of observations (this can take a while), set to False to load the precomputed dictionary
-
+save_dictionary = False # set to True to compute the dictionary with all combinations of observations (this can take a while), set to False to load the precomputed dictionary
 
 #Ground truth data with sowing and harvest dates
 field = pd.read_csv('Example/GroundTruth_example.csv')
@@ -72,6 +71,74 @@ field_example = filter_by_date(field, start_date=start_date, end_date=end_date, 
 s2_example = filter_by_date(s2, start_date=start_date, end_date=end_date)
 s1_example = filter_by_date(s1, start_date=start_date, end_date=end_date)
 pp_example = filter_by_date(pp, start_date=start_date, end_date=end_date)
+
+
+########### TRY TO USE SAME LOGIC FOR HYBRIS TO ONE BAND DATASETS
+s2_band = "BSI"
+# Create a daily date range spanning the entire dataset
+daily_dates = pd.DataFrame({"date": pd.date_range(start=s2["date"].min(), end=s2["date"].max(), freq="D")})
+
+# Merge with an outer join to keep all observations
+s2 = pd.merge(s2, daily_dates, on="date", how="outer")
+
+# Interpolate missing values using linear interpolation
+s2["daily_index"] = (s2[s2_band]
+    .interpolate(method="linear")  # Fill missing values
+)
+
+s2['daily_index_smooth'] = s2["daily_index"].rolling(window=30, center=True, min_periods=1).mean()  # Apply rolling average
+
+print(s2["daily_index"], s2['date'])
+
+if s2_band == "BSI":
+    s2['daily_index'] = 1 - s2['daily_index']
+    s2['daily_index_smooth'] = 1 - s2['daily_index_smooth']
+    
+#Find maxima and minima in the fused time series
+maxima = find_maxima(s2) #Peaks of seasons
+minima = find_minima(s2, distanceTillages=30, prominenceTillages=(0,1), height= None) #Sowing, harvest, tillage
+
+#Identify growing seasons based on predicted minima
+g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+
+#Filter out small seasons (less than 60 days)
+g_seasons = filter_small_seasons(g_seasons)
+
+predictions = add_tillages(g_seasons, minima)
+
+#Merge with predictions
+s2_example = add_predictions(s2_example, predictions)
+
+#Merge with predictions
+s2 = add_predictions(s2, predictions)
+
+# Convert Date columns to datetime format
+field.loc[:, 'Date'] = pd.to_datetime(field['Date'], errors='coerce')
+
+s2 = merge_with_GT(s2, field)
+s2["ID"] = 805 # add ID column for validation
+s2.to_csv(r"C:\Users\dall002\OneDrive - Wageningen University & Research\Chapter 1\2nd_revision\ts_experiments\s2_exp.csv", index=False)
+print(s2.head())
+print(s2.columns.tolist())
+results = validate_predictions(s2)
+results.to_csv(r"C:\Users\dall002\OneDrive - Wageningen University & Research\Chapter 1\2nd_revision\ts_experiments\results_s2_exp.csv", index=False)
+
+fig, axes = plt.subplots(nrows=1, ncols=1, figsize=(11.5, 4.1), sharex=True)
+plot_hybris(s2,
+            add_pred_sow_harv = True,
+            plot_tillages=True,
+            plot_dormant=True,
+            add_groundtruth=True,
+            ax = axes, date_col = "Date",
+            color = 'blue', # color based on number of observations
+            legend = True,
+            alpha_raw=0.5, alpha_smooth=1
+            )
+print(results)
+plt.tight_layout()
+plt.show()
+
+k+o
 
 # define function to randomly mask observations from the Sentinel 1 or Sentinel 2 time series
 # to explore the effect of data availability on the HyBRIS index 
@@ -197,11 +264,13 @@ for (s1_obs, s2_obs), (hybris_sub, s1_sub, s2_sub) in precomputed.items():
         color_s2 = 'black'
         color_s1 = 'black'
 
+    hybris_sub = merge_with_GT(hybris_sub, field) #combine everything in one long dataframe
+
     plot_hybris(hybris_sub[(hybris_sub["Date"] > start_date) & (hybris_sub["Date"] < end_date)],
                 add_pred_sow_harv = False,
                 plot_tillages=False,
                 plot_dormant=False,
-                add_groundtruth=False,
+                add_groundtruth=True,
                 ax = axes[0], date_col = "Date",
                 color = color_h, # color based on number of observations
                 legend = False,
