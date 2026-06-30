@@ -3,6 +3,20 @@ import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 
+def getID(df, id_value, id_column='ID'):
+    """
+    Filters a DataFrame to return only rows where the specified column matches the given ID.
+    
+    Parameters:
+    df (pd.DataFrame): The input DataFrame.
+    id_value (any): The ID value to filter by.
+    id_column (str): The column name to filter on (default is 'ID').
+    
+    Returns:
+    pd.DataFrame: A DataFrame containing only the matching rows.
+    """
+    return df[df[id_column] == id_value]
+
 def normalize_percentiles(data, lower_percentile=0.02, upper_percentile=0.98):
     """
     Normalize a time series using the specified percentiles.
@@ -34,7 +48,7 @@ def add_vis_radar(df):
         df (pandas.DataFrame): Input dataframe with required radar bands (VH, VV).
         
     Returns:
-        pandas.DataFrame: DataFrame with added RVI, VH_VV, VV_VH, and RI2 columns.
+        pandas.DataFrame: DataFrame with added RVI, VH_VV, VV_VH columns.
     """
     # Work on a copy to avoid SettingWithCopyWarning
     df = df.copy()
@@ -56,8 +70,8 @@ def add_vis_radar(df):
     # Calculate Radar Vegetation Indices
     with np.errstate(divide='ignore', invalid='ignore'):
         df['RVI'] = normalize_percentiles((4 * vh_lin)/(vv_lin + vh_lin)) #calculated using the linearly transformed VV and VH
-        df['VH_VV'] = normalize_percentiles(df['VH'] - df['VV'])
-        df['VV_VH'] = normalize_percentiles(df['VV'] - df['VH'])
+        df['VH_VV'] = normalize_percentiles(df['VH'] - df['VV']) #calculated using the difference: VV and VH are in log scale
+        df['VV_VH'] = normalize_percentiles(df['VV'] - df['VH']) #calculated using the difference: VV and VH are in log scale
     
     return df
 
@@ -204,73 +218,136 @@ def selectOrbit(df, selectMostPresent=False, selectHighestAngle=False):
     # Return all orbit combinations as dictionary
     return {f"{orbit}_{orbitNum}": group for (orbit, orbitNum), group in grouped}
 
+def daily_index_with_contributions_vectorized(
+        s2df: pd.DataFrame,
+        s1df: pd.DataFrame,
+        maxDiff: int = 12,
+        bandS2: str = 'BSI',
+        bandS1: str = 'VH_VV',
+        smoothing: int = 30
+    ) -> pd.DataFrame:
+        """
+        Vectorized computation of daily_index, s1_contribution, s2_contribution.
+        Returns a DataFrame with columns: date, daily_index, s1_contribution, s2_contribution, daily_index_smooth.
+        """
 
-def daily_index_with_contributions(s2df, s1df, maxDiff=30, bandS2='NDVI', bandS1='RVI'):
-    """
-    Calculate a daily time series using the specified bands.
-    
-    Args:
-        s2df (pd.dataframe): Input data from Sentinel 2. This dataframe should contain a 'date' column and the specified band.
-        s1df (pd.dataframe): Input data from Sentinel 1. This dataframe should contain a 'date' column and the specified band.
-        maxDiff (int): window size. It is the maximum time difference in days to consider for combining the two data (default: +-30 days).
-        bandS2 (str): Band name for Sentinel-2 data (default: 'NDVI').
-        bandS1 (str): Band name for Sentinel-1 data (default: 'RVI').
-               
-    Returns:
-        pd.dataframe: Normalized time series which combines the bandS2 and the bandS1, clipped between 0 and 1.
-        It also contains the contributions of each band (Sentinel 1 or Sentinel 2) to the daily index.
-    """
-        
-    # Select band for Sentinel-2 and Sentinel-1
-    s2band = s2df[bandS2].values
-    s1band = s1df[bandS1].values
+        # --- Prepare date range ---
+        # Ensure date columns are datetime64[ns]
+        s1 = s1df.copy()
+        s2 = s2df.copy()
+        s1['date'] = pd.to_datetime(s1['date'])
+        s2['date'] = pd.to_datetime(s2['date'])
 
-    # Create a sequence of daily dates covering the range of observations
-    start_date = min(s1df['date'].min(), s2df['date'].min())
-    end_date = max(s1df['date'].max(), s2df['date'].max())
-    daily_dates = pd.date_range(start=start_date, end=end_date, freq='D')
+        start_date = min(s1['date'].min(), s2['date'].min())
+        end_date = max(s1['date'].max(), s2['date'].max())
+        daily_dates = pd.date_range(start=start_date, end=end_date, freq='D')
 
-    # Initialize the new dataframe
-    daily_data = pd.DataFrame({'date': daily_dates, 'daily_index': np.nan, 's1_contribution': np.nan, 's2_contribution': np.nan})
+        # Convert to numpy datetime64[D] for integer day differences
+        daily_np = daily_dates.values.astype('datetime64[D]')
+        s1_dates_np = s1['date'].values.astype('datetime64[D]')
+        s2_dates_np = s2['date'].values.astype('datetime64[D]')
 
-    # Calculate the weighted mean and contributions for each day
-    for i, current_date in enumerate(daily_data['date']):
-        s1_time_diff = np.abs((current_date - s1df['date']).dt.days)
-        s2_time_diff = np.abs((current_date - s2df['date']).dt.days)
+        # --- Sensor values as numpy arrays ---
+        s1_vals = s1[bandS1].values.astype(float) if bandS1 in s1.columns else np.full(len(s1), np.nan)
+        s2_vals = s2[bandS2].values.astype(float) if bandS2 in s2.columns else np.full(len(s2), np.nan)
 
-        combined_values = np.concatenate([s1band, s2band])
-        combined_time_diffs = np.concatenate([s1_time_diff, s2_time_diff])
+        # If either sensor has zero rows, handle gracefully
+        n_days = daily_np.shape[0]
+        n_s1 = s1_dates_np.shape[0]
+        n_s2 = s2_dates_np.shape[0]
 
-        # Valid mask
-        valid_mask = (~np.isnan(combined_values)) & (~np.isnan(combined_time_diffs)) & (combined_time_diffs <= maxDiff)
-        
-        if np.any(valid_mask):
-            weights = 1 / (combined_time_diffs[valid_mask] + 1)
+        # Edge: if no s1 or s2 rows, create empty arrays with correct shapes
+        if n_s1 == 0:
+            s1_dates_np = np.array([], dtype='datetime64[D]')
+            s1_vals = np.array([], dtype=float)
+        if n_s2 == 0:
+            s2_dates_np = np.array([], dtype='datetime64[D]')
+            s2_vals = np.array([], dtype=float)
 
-            n_s1 = len(s1band)
-            # Split into Sentinel-1 and Sentinel-2
-            s1_weights = weights[:np.sum((~np.isnan(s1band)) & (s1_time_diff <= maxDiff))]
-            s2_weights = weights[np.sum((~np.isnan(s1band)) & (s1_time_diff <= maxDiff)):]
-            
-            s1_weight_sum = np.sum(s1_weights)
-            s2_weight_sum = np.sum(s2_weights)
-            total_weight_sum = s1_weight_sum + s2_weight_sum
+        # --- Compute absolute day differences matrices (shape: n_days x n_sensor) ---
+        # If sensor has zero rows, create empty (n_days x 0) arrays
+        if s1_dates_np.size > 0:
+            # broadcasting: (n_days,1) - (1,n_s1) -> (n_days,n_s1)
+            s1_diff = np.abs((daily_np[:, None] - s1_dates_np[None, :]).astype('timedelta64[D]').astype(int))
+        else:
+            s1_diff = np.zeros((n_days, 0), dtype=int)
 
-            # Calculate daily index
-            daily_data.loc[i, 'daily_index'] = np.average(combined_values[valid_mask], weights=weights)
+        if s2_dates_np.size > 0:
+            s2_diff = np.abs((daily_np[:, None] - s2_dates_np[None, :]).astype('timedelta64[D]').astype(int))
+        else:
+            s2_diff = np.zeros((n_days, 0), dtype=int)
 
-            # Calculate contributions
-            if total_weight_sum > 0:
-                daily_data.loc[i, 's1_contribution'] = (s1_weight_sum / total_weight_sum)
-                daily_data.loc[i, 's2_contribution'] = (s2_weight_sum / total_weight_sum)
+        # --- Valid masks (within maxDiff and not NaN) ---
+        if s1_vals.size > 0:
+            s1_notnan = ~np.isnan(s1_vals)  # shape (n_s1,)
+            s1_valid_mask = (s1_diff <= maxDiff) & s1_notnan[None, :]
+        else:
+            s1_valid_mask = np.zeros((n_days, 0), dtype=bool)
 
-    # Normalize daily index
-    daily_data['daily_index'] = normalize_percentiles(daily_data['daily_index'])    
+        if s2_vals.size > 0:
+            s2_notnan = ~np.isnan(s2_vals)
+            s2_valid_mask = (s2_diff <= maxDiff) & s2_notnan[None, :]
+        else:
+            s2_valid_mask = np.zeros((n_days, 0), dtype=bool)
 
-    return daily_data
+        # --- Weights: 1 / (days_diff + 1) where valid, else 0 ---
+        # Avoid division by zero: diff >= 0 so +1 is safe
+        if s1_diff.size > 0:
+            s1_weights = np.where(s1_valid_mask, 1.0 / (s1_diff + 1), 0.0)
+        else:
+            s1_weights = np.zeros((n_days, 0), dtype=float)
 
-def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=30):
+        if s2_diff.size > 0:
+            s2_weights = np.where(s2_valid_mask, 1.0 / (s2_diff + 1), 0.0)
+        else:
+            s2_weights = np.zeros((n_days, 0), dtype=float)
 
+        # --- Weighted sums and contributions ---
+        # Numerator: sum(weights * values) across sensor observations
+        if s1_vals.size > 0:
+            s1_vals_row = s1_vals[None, :]  # shape (1, n_s1)
+            s1_num = (s1_weights * s1_vals_row).sum(axis=1)  # shape (n_days,)
+            s1_wsum = s1_weights.sum(axis=1)
+        else:
+            s1_num = np.zeros(n_days, dtype=float)
+            s1_wsum = np.zeros(n_days, dtype=float)
+
+        if s2_vals.size > 0:
+            s2_vals_row = s2_vals[None, :]
+            s2_num = (s2_weights * s2_vals_row).sum(axis=1)
+            s2_wsum = s2_weights.sum(axis=1)
+        else:
+            s2_num = np.zeros(n_days, dtype=float)
+            s2_wsum = np.zeros(n_days, dtype=float)
+
+        total_weight = s1_wsum + s2_wsum
+
+        # Avoid division by zero: where total_weight == 0 set daily_index to nan
+        with np.errstate(divide='ignore', invalid='ignore'):
+            daily_index_arr = (s1_num + s2_num) / total_weight
+            daily_index_arr = np.where(total_weight > 0, daily_index_arr, np.nan)
+
+            s1_contrib_arr = np.where(total_weight > 0, s1_wsum / total_weight, np.nan)
+            s2_contrib_arr = np.where(total_weight > 0, s2_wsum / total_weight, np.nan)
+
+        # --- Build DataFrame ---
+        daily_data = pd.DataFrame({
+            'date': daily_dates,
+            'daily_index': daily_index_arr,
+            's1_contribution': s1_contrib_arr,
+            's2_contribution': s2_contrib_arr
+        })
+
+        # --- Normalize and smooth ---
+        # normalize_percentiles must accept a pandas Series and return a Series/array of same length
+        daily_data['daily_index'] = normalize_percentiles(daily_data['daily_index'])
+
+        # Smooth the index (same as original)
+        daily_data['daily_index_smooth'] = daily_data['daily_index'].rolling(window=smoothing, center=True, min_periods=1).mean()
+
+        return daily_data
+
+def calculate_hybris_vectorized(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=12): 
     """
     Calculate the Hybris index using Sentinel-1 and Sentinel-2 data.
     Args:
@@ -281,15 +358,15 @@ def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=30):
     Returns:
         pd.DataFrame: A DataFrame containing the Hybris index, smoothed index, and ID.
     """
-
+        
     #Calculate fused index using BSI and VV_VH
-    hybris = daily_index_with_contributions(s2, s1, bandS2 = bandS2, bandS1= bandS1, maxDiff=maxDiff)
+    hybris = daily_index_with_contributions_vectorized(s2, s1, bandS2 = bandS2, bandS1= bandS1, maxDiff=maxDiff)
 
-    #Invert index to resemble a vegetation index
-    hybris['daily_index'] = 1 - hybris['daily_index']
-
-    #Smooth the index
-    hybris['daily_index_smooth'] = hybris['daily_index'].rolling(window=30, center=True, min_periods=1).mean()
+    if bandS2 == 'BSI':
+        #Invert index to resemble a vegetation index
+        hybris['daily_index'] = 1 - hybris['daily_index']
+        #Invert index to resemble a vegetation index
+        hybris['daily_index_smooth'] = 1 - hybris['daily_index_smooth']
 
     #Add ID column
     ID_field = s2['ID'].unique()[0]  # Extract the field ID from the Sentinel-2 data
@@ -299,6 +376,123 @@ def calculate_hybris(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=30):
     hybris['ID_date'] = hybris['ID'].astype(str) + "_" + hybris['date'].dt.strftime('%Y-%m-%d')
 
     return pd.DataFrame(hybris)
+
+# Function to process a single field to store minima dates and ground truth dates
+def wrapper_optical_band(s2_path, bandsused, s2_band, gt):
+    
+    # Open Sentinel-2 and Sentinel-1 files
+    s2 = add_vis(openSentinel2file(s2_path, bandsused))
+
+    # Create a daily date range spanning the entire dataset
+    daily_dates = pd.DataFrame({"date": pd.date_range(start=s2["date"].min(), end=s2["date"].max(), freq="D")})
+
+    # Merge with an outer join to keep all observations
+    s2 = pd.merge(s2, daily_dates, on="date", how="outer")
+   
+    if s2_band == 'BSI':
+        s2[s2_band] = 1 - s2[s2_band] # Invert the index for BSI
+
+    # Retrieve management data for this field
+    id = int(s2['ID'].unique()[0])
+    field = getID(gt, id)
+
+    ########### USING THE SAME LOGIC FOR HYBRIS TO ONE BAND DATASETS
+    # Interpolate missing values using linear interpolation
+    s2["daily_index"] = (s2[s2_band]
+        .interpolate(method="linear")  # Fill missing values
+    )
+
+    s2['daily_index_smooth'] = s2["daily_index"].rolling(window=30, center=True, min_periods=1).mean()  # Apply rolling average
+    
+    #Find maxima and minima in the fused time series
+    maxima = find_maxima(s2) #Peaks of seasons
+    minima = find_minima(s2, prominenceMin = 0.1, distanceTillages=30, prominenceTillages=(0,1)) #Sowing, harvest, tillage
+
+    #Identify growing seasons based on predicted minima
+    g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+
+    #Add tillage predictions
+    predictions = add_tillages(g_seasons, minima)
+
+    #Check if field exists
+    if field.empty:
+        print(f"Field ID {id} not found in ground truth data.")
+
+    #If field exists, proceed with analysis    
+    else:
+
+        #Merge with predictions
+        s2 = add_predictions(s2, predictions)
+        
+        # Convert Date columns to datetime format
+        field.loc[:, 'Date'] = pd.to_datetime(field['Date'], errors='coerce')
+
+        s2 = merge_with_GT(s2, field)
+        s2["ID"] = int(s2['ID'].unique()[0])
+
+        results = validate_predictions(s2)
+
+        return results, s2
+
+
+def wrapper_radar_band(s1_path, bandsusedS1, s1_band, gt):
+
+        s1 = openSentinel1file(s1_path, bandsusedS1)
+
+        # Calculate daily index with both S1 orbits separately
+        s1_asc = s1[s1['orbit'] == 'ASCENDING']  # Select only ascending orbits
+        s1_des = s1[s1['orbit'] == 'DESCENDING']  # Select only descending orbits
+
+        s1_des = selectOrbit(s1_des, selectMostPresent=True) # Select only most present orbit
+        s1_asc = selectOrbit(s1_asc, selectMostPresent=True) # Select only most present orbit
+
+        # Use both S1 orbits
+        s1_des = add_vis_radar(s1_des)
+        s1_asc = add_vis_radar(s1_asc)
+        s1 = pd.concat([s1_des, s1_asc], ignore_index=True) 
+
+        # Retrieve management data for this field
+        id = int(s1['ID'].unique()[0])
+        field = getID(gt, id)
+
+        ########### USING THE SAME LOGIC FOR HYBRIS TO ONE BAND DATASETS
+        # Interpolate missing values using linear interpolation
+        s1["daily_index"] = (s1[s1_band]
+            .interpolate(method="linear")  # Fill missing values
+        )
+
+        s1['daily_index_smooth'] = s1["daily_index"].rolling(window=30, center=True, min_periods=1).mean()  # Apply rolling average
+        
+        #Find maxima and minima in the fused time series
+        maxima = find_maxima(s1) #Peaks of seasons
+        minima = find_minima(s1, prominenceMin = 0.1, distanceTillages=30, prominenceTillages=(0,1)) #Sowing, harvest, tillage
+
+        #Identify growing seasons based on predicted minima
+        g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+
+        #Add tillage predictions
+        predictions = add_tillages(g_seasons, minima)
+
+        #Check if field exists
+        if field.empty:
+            print(f"Field ID {id} not found in ground truth data.")
+
+        #If field exists, proceed with analysis    
+        else:
+
+            #Merge with predictions
+            s1 = add_predictions(s1, predictions)
+            
+            # Convert Date columns to datetime format
+            field.loc[:, 'Date'] = pd.to_datetime(field['Date'], errors='coerce')
+
+            s1 = merge_with_GT(s1, field)
+            s1["ID"] = int(s1['ID'].unique()[0])
+
+            results = validate_predictions(s1)
+
+            return results, s1
+
 
 def find_maxima(hybris, distancePOS=60, prominencePOS=(0.1, 1)):
     """
@@ -313,11 +507,11 @@ def find_maxima(hybris, distancePOS=60, prominencePOS=(0.1, 1)):
         dates : array-like
             Corresponding dates for the vegetation index values.
     
-    distancePOS : int, optional (default=60)
-        Minimum distance between detected Peak of Seasons.
+    distanceMax : int, optional (default=60)
+        Minimum distance between detected maxima.
     
-    prominencePOS : tuple (default=(0.1, 1))
-        Minimum prominence required for Peak of Seasons.
+    prominenceMax : tuple (default=(0.1, 1))
+        Minimum prominence required for maxima.
 
     Returns:
     --------
@@ -344,7 +538,7 @@ def find_maxima(hybris, distancePOS=60, prominencePOS=(0.1, 1)):
 
     return pd.DataFrame(maxima)
 
-def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages=30, prominenceTillages=(0.1, 1), height = None):
+def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages=30, prominenceTillages=(0.1, 1), height = None, wlen = None):
     """
     Finds the minimum points (valleys) in a time series.
 
@@ -369,9 +563,6 @@ def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages
     prominenceTillages : tuple (default=(0.1, 1))
         Minimum prominence required for tillages.
 
-    height : float, optional (default=None)
-        Minimum height of the minima to be detected. If None, no height filtering is applied.
-
     Returns:
     --------
     pd.DataFrame
@@ -380,19 +571,23 @@ def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages
         - `Value`
         - `Prominence`
     """
+    #to find minima, a negative sign is put on the time series, as the find_peaks function only finds maxima.
+    #by flipping the time series, minima become maxima.
+
     ### SOWING
     # Detect all smooth minima in the time series (sowing)
-    sowing, sow_properties = find_peaks(-hybris["daily_index_smooth"], distance=distanceMin, prominence=prominenceMin)
+    sowing, sow_properties = find_peaks(-hybris["daily_index_smooth"], distance=distanceMin, prominence=prominenceMin, wlen = wlen)
     sow_properties = sow_properties["prominences"]
 
-    ### HARVEST
+
+    ### HARVEST ORIGINAL
     # Detect all minima in the time series in rough time series (harvest)
-    harvest, harv_properties = find_peaks(-hybris["daily_index"], distance=distanceMin, prominence=prominenceMin, height=height)
+    harvest, harv_properties = find_peaks(-hybris["daily_index"], distance=distanceMin, prominence=prominenceMin, wlen = wlen)
     harv_properties = harv_properties["prominences"]
 
     ### TILLAGE
     #Detect minima in the time series in rough time series (tillage)
-    tillage, tillage_properties = find_peaks(-hybris["daily_index"], distance=distanceTillages, prominence=prominenceTillages, height=height)
+    tillage, tillage_properties = find_peaks(-hybris["daily_index"], distance=distanceTillages, prominence=prominenceTillages, height=height, wlen = wlen)
     tillage_properties = tillage_properties["prominences"]
 
     ## store results into a datafrane
@@ -429,16 +624,7 @@ def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages
     minima = pd.DataFrame(minima)
     return pd.DataFrame(minima)
 
-    
 def growing_seasons(maxima, minima):
-    """    Create a DataFrame with growing seasons based on maxima and minima.
-    Args:
-        maxima (pd.DataFrame): DataFrame containing maxima with columns 'Date', 'Value', and 'Prominence'.
-        minima (pd.DataFrame): DataFrame containing minima with columns 'Date', 'Value', 'Prominence', and 'Type'.
-    Returns:
-        pd.DataFrame: A DataFrame with growing seasons, including sowing, peak, and harvest events.
-    """
-    # Ensure maxima and minima are sorted by date
     # Filter only sowing and harvest events
     sowings = minima[minima["Type"] == "sowing"].sort_values("Date")
     harvests = minima[minima["Type"] == "harvest"].sort_values("Date")
@@ -494,8 +680,12 @@ def growing_seasons(maxima, minima):
 
         # Find the first harvest after the peak
         harvest_after_peak = harvests[harvests["Date"] > peak_date]
+
+        
         if not harvest_after_peak.empty:
+            #Original way, take the first harvest
             harvest = harvest_after_peak.iloc[0]
+
             has_harvest = True
             harvest_date = harvest["Date"]
             results.append({
@@ -531,25 +721,10 @@ def growing_seasons(maxima, minima):
         for j in range(3):
             results[-1 - j]["season_complete"] = complete
             results[-1 - j]["season_length"] = season_length
-
-
-   
+    
+    # Build long dataframe
     df_long = pd.DataFrame(results).sort_values(["season_id", "Date"])
-
-    return df_long
-
-def filter_small_seasons(df_long, min_season_length = 60, min_peak_value = 0.4):
-    # Filter out seasons and with duration < 60 days and peak < 0.4
-    # We exclude these as they are unlikely to be a crop or a cover crop.
-    # These are ASSOCIATED WITH WEED REGROWTH
-    invalid_seasons = df_long[
-        (df_long["season_complete"] == True) &  # Only consider complete seasons
-        ((df_long["season_length"] < min_season_length) & (df_long["Value"] < min_peak_value)) &  # Filter by season length or peak value
-        (df_long["pred_type"] == "peak")  # Only consider rows of type 'peak'
-    ]["season_id"].unique()
-
-    df_long = df_long[~df_long["season_id"].isin(invalid_seasons)]
-
+    
     return df_long
 
 def add_tillages(g_seasons, minima):
@@ -564,26 +739,44 @@ def add_tillages(g_seasons, minima):
     phen_dates = g_seasons[g_seasons["pred_type"].isin(["pred_sowing", "pred_harvest"])]["Date"]
     tillage_df["coincident"] = tillage_df["Date"].isin(phen_dates)
 
+    # ensure event order on identical dates:
+    # - pred_harvest before pred_tillage, so a tillage on harvest date belongs to the next season
+    # - pred_tillage before pred_sowing, so a tillage on sowing date belongs to the previous season
+    event_order = {
+        "pred_harvest": 0,
+        "pred_tillage": 1,
+        "pred_sowing": 2
+    }
+    
     # Merge into hybris
-    results = pd.concat([g_seasons, tillage_df], ignore_index=True).sort_values(["Date"])
+    results = (
+        pd.concat([g_seasons, tillage_df], ignore_index=True)
+                .assign(event_rank=lambda df: df["pred_type"].map(event_order).fillna(10))
+                .sort_values(["Date", "event_rank"])
+                .drop(columns="event_rank")
+                )
     return results
 
 def add_predictions(hybris, predictions):
-    """
-    Add predictions to the hybris DataFrame and assign growing season flags.
-    Args:
-        hybris (pd.DataFrame): DataFrame containing the Hybris index with a 'date' column.
-        predictions (pd.DataFrame): DataFrame containing predicted events with a 'date' column and 'pred_type'.
-    Returns:
-        pd.DataFrame: A DataFrame with predictions merged into the Hybris index, including growing season flags.
-    """
 
     hybris = hybris.copy().rename(columns={"date": "Date"})
     # Merge hybris time series with predicted events
     predictions = pd.merge(hybris, predictions, on="Date", how="left")
 
-    #Add a flag True or False to assign to each date: is it part of a growing season or not?
-    predictions = predictions.sort_values("Date").reset_index(drop=True)
+    # Add a flag True or False to assign to each date: is it part of a growing season or not?
+    event_order = {
+        "pred_harvest": 0,
+        "pred_tillage": 1,
+        "pred_sowing": 2,
+        "peak": 3,
+        "pred_tillage_excluded": 1
+    }
+    predictions = (
+        predictions
+        .assign(event_rank=lambda df: df["pred_type"].map(event_order).fillna(10))
+        .sort_values(["Date", "event_rank"]).reset_index(drop=True)
+        .drop(columns="event_rank")
+    )
 
     # Initialize column
     predictions["in_growing_season"] = False
@@ -606,21 +799,21 @@ def add_predictions(hybris, predictions):
             predictions.loc[peak : harvest_after[0], "in_growing_season"] = True
 
 
-    # #Keep tillage predictions which are coincident with an harvest or a sowing event
-    # #Filter out tillage predicions which are inside a growing season
+    # assign season number to each row, breaking also when a new sowing follows a harvest
+    predictions['season_number'] = (
+        ((predictions['in_growing_season'] != predictions['in_growing_season'].shift()) |
+         ((predictions['pred_type'] == 'pred_sowing') & (predictions['pred_type'].shift() == 'pred_harvest')))
+        .cumsum()
+    )
+
+    #Coincident tillages are kept! But filter out the tillage predicions which are inside a growing season
     mask = (
         (predictions["pred_type"] == "pred_tillage") &
-        (predictions["in_growing_season"] == True)
+        (predictions["in_growing_season"] == True) &
+        (predictions["coincident"] == False)
     )
 
     predictions.loc[mask, "pred_type"] = 'pred_tillage_excluded'
-
-    # assign season number to each row, based on the column 'in_growing_season'
-    predictions['season_number'] = (
-        predictions['in_growing_season']            # current value
-        .ne(predictions['in_growing_season'].shift())  # True when the value changes
-        .cumsum()                        # running total of the changes
-    )
 
     return predictions
 
@@ -644,6 +837,289 @@ def merge_with_GT(merged, ground_truth):
         how="left"
     )
     return merged
+
+
+def _ensure_datetime_and_sort(df, date_col="Date"):
+    df = df.copy()
+    df[date_col] = pd.to_datetime(df[date_col])
+    df = df.sort_values([ "ID", date_col ]).reset_index(drop=False)  # keep original index in 'index' column
+    # keep original index as column so we can refer back to original rows
+    df = df.rename(columns={"index": "_orig_index"})
+    return df
+
+def _empty_pred_dict():
+    return {
+        "pred_date": pd.NA,
+        "pred_value": pd.NA,
+        "pred_type": pd.NA,
+        "pred_prominence": pd.NA,
+        "pred_note": pd.NA,
+        "delta": pd.NA,
+        "pred_s1_contribution": pd.NA,
+        "pred_s2_contribution": pd.NA,
+        "matched": False
+    }
+
+def _build_comparison_dict(obs_row, pred_info, obs_type_label):
+    d = {
+        "ID": obs_row["ID"],
+        "Farm": obs_row.get("Farm", pd.NA),
+        "Country": obs_row.get("Country", pd.NA),
+        "Crop": obs_row.get("Crop", pd.NA),
+        "Crop.type": obs_row.get("Crop.type", pd.NA),
+        "Method_EN": obs_row.get("Method_EN", pd.NA),
+        "obs_date": obs_row["Date"],
+        "obs_type": obs_type_label,
+    }
+    d.update(pred_info)
+    return d
+
+def _choose_peak_for_obs(peaks_df, obs_date, direction="future"):
+    """
+    peaks_df must be sorted by Date ascending.
+    direction: "future" -> earliest peak strictly after obs_date
+            "past"   -> latest peak strictly before obs_date
+    Returns the peak row (as Series) or None.
+    """
+    if peaks_df.empty:
+        return None
+    if direction == "future":
+        candidates = peaks_df[peaks_df["Date"] > obs_date]
+        if candidates.empty:
+            return None
+        return candidates.iloc[0]  # earliest after obs_date
+    else:
+        # allow peaks up to obs_date
+        cutoff = obs_date
+        candidates = peaks_df[peaks_df["Date"] < cutoff]
+        if candidates.empty:
+            return None
+        return candidates.iloc[-1]  # latest before cutoff
+
+def _select_pred_within_season(merged_df, season_id, ID, pred_type_label, obs_date):
+    """
+    From merged_df select rows with given season_id, ID and pred_type_label.
+    If multiple rows exist, choose the one closest in absolute days to obs_date.
+    Returns the selected row (Series) or None.
+    """
+    preds = merged_df[
+        (merged_df["season_id"] == season_id) &
+        (merged_df["ID"] == ID) &
+        (merged_df["pred_type"] == pred_type_label)
+    ]
+    if preds.empty:
+        return None
+    preds = preds.copy()
+    preds["delta_abs"] = (preds["Date"] - obs_date).abs().dt.days
+    chosen = preds.sort_values("delta_abs").iloc[0]
+    return chosen
+
+def _match_sowings_and_harvests(merged, peaks, obs_rows, direction, obs_type_label, pred_type_label):
+    comparisons = []
+    # ensure peaks sorted by Date per ID
+    peaks_sorted = peaks.sort_values(["ID", "Date"])
+    for _, obs_row in obs_rows.iterrows():
+        # filter peaks for this ID
+        peaks_for_id = peaks_sorted[peaks_sorted["ID"] == obs_row["ID"]]
+        peak_row = _choose_peak_for_obs(peaks_for_id, obs_row["Date"], direction=direction)
+        if peak_row is None:
+            pred_info = _empty_pred_dict()
+        else:
+            season_id = peak_row["season_id"]
+            pred_row = _select_pred_within_season(merged, season_id, obs_row["ID"], pred_type_label, obs_row["Date"])
+            if pred_row is None:
+                pred_info = _empty_pred_dict()
+            else:
+                delta_days = (pred_row["Date"] - obs_row["Date"]).days
+                pred_info = {
+                    "pred_date": pred_row["Date"],
+                    "pred_value": pred_row.get("daily_index_smooth", pred_row.get("daily_index", pd.NA)),
+                    "pred_type": pred_type_label,
+                    "pred_prominence": pred_row.get("Prominence", pd.NA),
+                    "pred_note": pred_row.get("season_complete", pd.NA),
+                    "delta": delta_days,
+                    "pred_s1_contribution": pred_row.get("s1_contribution", pd.NA),
+                    "pred_s2_contribution": pred_row.get("s2_contribution", pd.NA),
+                    "matched": True
+                }
+        comparisons.append(_build_comparison_dict(obs_row, pred_info, obs_type_label))
+    return comparisons
+
+def _match_tillages(merged, pred_tillages, coincidents, obs_tillages, one_to_one_tillage_match=True, add_window_for_tillages=True):
+    """
+    Returns list of comparison dicts for tillages and also returns unmatched prediction rows as comparison dicts
+    (same structure as original function).
+    - pred_tillages: DataFrame of predicted tillages (must include original index column '_orig_index')
+    - coincidents: DataFrame of coincident predicted tillages (same columns)
+    - obs_tillages: DataFrame of observed tillages (must include 'in_growing_season' boolean and 'season_number')
+    """
+    comparisons = []
+    matched_pred_orig_indices = set()
+    all_preds_in_window = []
+
+    # Split observed tillages
+    obs_within_dormant = obs_tillages[obs_tillages['in_growing_season'] == False]
+    obs_in_growing = obs_tillages[obs_tillages['in_growing_season'] == True]
+
+    # Precompute pred_tillages with original indices preserved
+    pred_tillages = pred_tillages.copy()
+    if "_orig_index" not in pred_tillages.columns:
+        pred_tillages["_orig_index"] = pred_tillages.index
+
+    coincidents = coincidents.copy()
+    if "_orig_index" not in coincidents.columns:
+        coincidents["_orig_index"] = coincidents.index
+
+    # Dormant-season matching: match observed tillage to predictions in same dormant season_number
+    for _, obs_row in obs_within_dormant.iterrows():
+        obs_date = obs_row["Date"]
+        obs_season = obs_row["season_number"]
+
+        preds_in_window = pred_tillages[pred_tillages["season_number"] == obs_season].copy()
+        # optionally remove already matched predictions using original indices
+        if one_to_one_tillage_match:
+            preds_in_window = preds_in_window[~preds_in_window["_orig_index"].isin(matched_pred_orig_indices)]
+
+        all_preds_in_window.append(preds_in_window)
+
+        # allow coincident tillages from current season
+        coincident_candidates = coincidents[coincidents["season_number"].isin([obs_season])].copy()
+        if one_to_one_tillage_match:
+            coincident_candidates = coincident_candidates[~coincident_candidates["_orig_index"].isin(matched_pred_orig_indices)]
+
+        if preds_in_window.empty and coincident_candidates.empty:
+            comparisons.append(_build_comparison_dict(obs_row, _empty_pred_dict(), "obs_tillage"))
+            continue
+
+        if preds_in_window.empty:
+            window_and_coincident = coincident_candidates
+        else:
+            window_and_coincident = pd.concat([preds_in_window, coincident_candidates], ignore_index=False).drop_duplicates(subset=["_orig_index"])
+
+        window_and_coincident = window_and_coincident.copy()
+        window_and_coincident["delta"] = (window_and_coincident["Date"] - obs_date).dt.days
+        window_and_coincident["abs_delta"] = window_and_coincident["delta"].abs()
+        # choose the row with smallest abs_delta; keep its original index
+        chosen = window_and_coincident.sort_values("abs_delta").iloc[0]
+        chosen_orig_index = chosen["_orig_index"]
+        delta = chosen["delta"]
+
+        pred_info = {
+            "pred_date": chosen["Date"],
+            "pred_value": chosen.get("daily_index", pd.NA),
+            "pred_type": "pred_tillage",
+            "pred_prominence": chosen.get("Prominence", pd.NA),
+            "pred_note": "in_dormant_season",
+            "delta": int(delta) if pd.notna(delta) else pd.NA,
+            "pred_s1_contribution": chosen.get("s1_contribution", pd.NA),
+            "pred_s2_contribution": chosen.get("s2_contribution", pd.NA),
+            "matched": True
+        }
+        comparisons.append(_build_comparison_dict(obs_row, pred_info, "obs_tillage"))
+        matched_pred_orig_indices.add(chosen_orig_index)
+
+    # Growing-season tillages: match to closest predicted tillage across all predictions (optionally with 30-day window)
+    for _, obs_row in obs_in_growing.iterrows():
+        obs_date = obs_row["Date"]
+        preds_all = pred_tillages.copy()
+        preds_all["delta"] = (preds_all["Date"] - obs_date).dt.days
+        preds_all["abs_delta"] = preds_all["delta"].abs()
+        preds_all = preds_all.sort_values("abs_delta")
+        if preds_all.empty:
+            comparisons.append(_build_comparison_dict(obs_row, _empty_pred_dict(), "obs_tillage"))
+            continue
+        chosen = preds_all.iloc[0]
+        delta = int(chosen["delta"])
+        chosen_orig_index = chosen["_orig_index"]
+
+        if add_window_for_tillages and abs(delta) > 30:
+            comparisons.append(_build_comparison_dict(obs_row, _empty_pred_dict(), "obs_tillage"))
+            continue
+
+        pred_info = {
+            "pred_date": chosen["Date"],
+            "pred_value": chosen.get("daily_index", pd.NA),
+            "pred_type": "pred_tillage",
+            "pred_prominence": chosen.get("Prominence", pd.NA),
+            "pred_note": "in_growing_season",
+            "delta": delta,
+            "pred_s1_contribution": chosen.get("s1_contribution", pd.NA),
+            "pred_s2_contribution": chosen.get("s2_contribution", pd.NA),
+            "matched": True
+        }
+        comparisons.append(_build_comparison_dict(obs_row, pred_info, "obs_tillage"))
+        if one_to_one_tillage_match:
+            matched_pred_orig_indices.add(chosen_orig_index)
+
+    # Add unmatched predictions from all_preds_in_window (use original indices)
+    if all_preds_in_window:
+        all_preds_in_window_df = pd.concat(all_preds_in_window, ignore_index=False).drop_duplicates(subset=["_orig_index"])
+        # select preds whose original index is not in matched_pred_orig_indices
+        unmatched_preds = all_preds_in_window_df[~all_preds_in_window_df["_orig_index"].isin(matched_pred_orig_indices)]
+        for _, row in unmatched_preds.iterrows():
+            pred_info = {
+                "pred_date": row["Date"],
+                "pred_value": row.get("daily_index", pd.NA),
+                "pred_type": "pred_tillage",
+                "pred_prominence": row.get("Prominence", pd.NA),
+                "pred_note": "in_dormant_season",
+                "delta": pd.NA,
+                "pred_s1_contribution": row.get("s1_contribution", pd.NA),
+                "pred_s2_contribution": row.get("s2_contribution", pd.NA),
+                "matched": False
+            }
+            d = {
+                "ID": row.get("ID", pd.NA),
+                "Farm": row.get("Farm", pd.NA),
+                "Country": row.get("Country", pd.NA),
+                "Crop": row.get("Crop", pd.NA),
+                "Crop.type": row.get("Crop.type", pd.NA),
+                "Method_EN": row.get("Method_EN", pd.NA),
+                "obs_date": pd.NA,
+                "obs_type": pd.NA,
+            }
+            d.update(pred_info)
+            comparisons.append(d)
+
+    return comparisons
+
+def validate_predictions(merged, one_to_one_tillage_match=True, add_window_for_tillages=False):
+    """
+    Replacement for validate_predictions.
+    - merged: input DataFrame with Date, pred_type, obs_type, season_id, season_number, ID, etc.
+    - one_to_one_tillage_match: if True, ensure a predicted tillage is matched at most once
+    - add_window_for_tillages: if True, apply 30-day window rule for tillages in growing season
+    Returns: comparison_df with same columns as original function output.
+    """
+    # Prepare data and keep original indices
+    merged_prepared = _ensure_datetime_and_sort(merged, date_col="Date")
+
+    # Recreate the filtered sets
+    peaks = merged[merged["pred_type"] == "peak"].sort_values(["ID", "Date"])
+    obs_sowings = merged[merged["obs_type"] == "obs_sowing"].drop_duplicates(subset=["Date", "ID"])  # ensure unique observed sowings by date and ID
+    obs_harvests = merged[merged["obs_type"] == "obs_harvest"].drop_duplicates(subset=["Date", "ID"])  # ensure unique observed harvests by date and ID
+    obs_tillages = merged[merged["obs_type"] == "obs_tillage"].drop_duplicates(subset=["Date", "ID"])  # ensure unique observed tillages by date and ID
+    pred_tillages = merged[merged["pred_type"] == "pred_tillage"].drop_duplicates(subset=["Date", "ID"])  # ensure unique predicted tillages by date and ID
+    coincidents = merged[(merged["pred_type"] == "pred_tillage") & (merged.get("coincident", False) == True)]
+
+    comparisons = []
+
+    # Sowings: observed sowing -> earliest future peak -> pred_sowing in that season
+    comparisons += _match_sowings_and_harvests(merged_prepared, peaks, obs_sowings, direction="future",
+                                            obs_type_label="obs_sowing", pred_type_label="pred_sowing")
+
+    # Harvests: observed harvest -> latest past peak -> pred_harvest in that season
+    comparisons += _match_sowings_and_harvests(merged_prepared, peaks, obs_harvests, direction="past",
+                                            obs_type_label="obs_harvest", pred_type_label="pred_harvest")
+
+    # Tillages
+    tillage_comparisons = _match_tillages(merged_prepared, pred_tillages, coincidents, obs_tillages,
+                                        one_to_one_tillage_match=one_to_one_tillage_match,
+                                        add_window_for_tillages=add_window_for_tillages)
+    comparisons += tillage_comparisons
+
+    comparison_df = pd.DataFrame(comparisons).drop_duplicates().reset_index(drop=True)
+    return comparison_df
 
 def filter_by_date(df, start_date, end_date, date_column='date'):
     """
@@ -688,9 +1164,9 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
     # Add groundtruth events as vertical lines
     if add_groundtruth:
         if hybris is not None:
-            category_map = {"obs_tillage": 'Tillage',
-                            'obs_sowing': 'Sowing',
-                            'obs_harvest': 'Harvest'
+            category_map = {"obs_tillage": 'obs. tillage',
+                            'obs_sowing': 'obs. sowing',
+                            'obs_harvest': 'obs. harvest'
                                }
             category_colors = {"obs_tillage": 'brown',
                                 'obs_sowing': 'green',
@@ -744,11 +1220,11 @@ def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtrut
     ax.set_title("")
     if legend:
         ax.legend(
-        loc='upper left',        # Position relative to bbox
-        bbox_to_anchor=(1.0, 0.8) # (x, y) coordinates relative to the axes
+            loc='center left',
+            bbox_to_anchor=(1.02, 0.5),
+            borderaxespad=0
         )
     ax.grid(False)
-   
     return ax
 
 
@@ -862,210 +1338,3 @@ def plot_time_series(values, dates, groundtruth=None, season_boundaries=None,
         plt.show()
 
     return ax
-
-
-def validate_predictions(merged):
-    import pandas as pd
-
-    merged = merged.sort_values("Date").copy()
-    comparisons = []
-
-    # Filter by types upfront
-    peaks = merged[merged["pred_type"] == "peak"]
-    sowings = merged[merged["pred_type"] == "pred_sowing"]
-    harvests = merged[merged["pred_type"] == "pred_harvest"]
-    obs_sowings = merged[merged["obs_type"] == "obs_sowing"]
-    obs_harvests = merged[merged["obs_type"] == "obs_harvest"]
-    obs_tillages = merged[merged["obs_type"] == "obs_tillage"]
-    pred_tillages = merged[merged["pred_type"] == "pred_tillage"]
-
-    def empty_pred_dict():
-        return {
-            "pred_date": pd.NA,
-            "pred_value": pd.NA,
-            "pred_type": pd.NA,
-            "pred_prominence": pd.NA,
-            "pred_note": pd.NA,
-            "delta": pd.NA,
-            "pred_s1_contribution": pd.NA,
-            "pred_s2_contribution": pd.NA,
-            "matched": False
-        }
-
-    def build_comparison_dict(obs_row, pred_info, obs_type_label):
-        d = {
-            "ID": obs_row["ID"],
-            "Farm": obs_row.get("Farm", pd.NA),
-            "Country": obs_row.get("Country", pd.NA),
-            "Crop": obs_row.get("Crop", pd.NA),
-            "Crop.type": obs_row.get("Crop.type", pd.NA),
-            "Method_EN": obs_row.get("Method_EN", pd.NA),
-            "obs_date": obs_row["Date"],
-            "obs_type": obs_type_label,
-        }
-        d.update(pred_info)
-        return d
-
-    def match_observed_to_predicted(obs_rows, direction, obs_type_label, pred_type_label, value_col, daily_index_col, index_choice):
-        """
-        direction: "future" or "past" peak relative to observed date
-        obs_type_label: e.g. 'obs_sowing' or 'obs_harvest'
-        pred_type_label: e.g. 'pred_sowing' or 'pred_harvest'
-        value_col: column name for predicted value ('daily_index_smooth' or 'daily_index')
-        daily_index_col: same as value_col, used in pred_value assignment
-        index_choice: 0 for first (future), -1 for last (past)
-        """
-        for _, obs_row in obs_rows.iterrows():
-            if direction == "future":
-                peak_rows = peaks[(peaks["Date"] > obs_row["Date"]) & (peaks["ID"] == obs_row["ID"])]
-            else:
-                peak_rows = peaks[(peaks["Date"] < obs_row["Date"]) & (peaks["ID"] == obs_row["ID"])]
-
-            if peak_rows.empty:
-                pred_info = empty_pred_dict()
-            else:
-                peak_row = peak_rows.iloc[index_choice]
-                season_id = peak_row["season_id"]
-                preds = merged[(merged["season_id"] == season_id) & (merged["ID"] == obs_row["ID"]) & (merged["pred_type"] == pred_type_label)]
-                if preds.empty:
-                    pred_info = empty_pred_dict()
-                else:
-                    pred_row = preds.iloc[0]
-                    delta_days = (pred_row["Date"] - obs_row["Date"]).days
-                    pred_info = {
-                        "pred_date": pred_row["Date"],
-                        "pred_value": pred_row.get(value_col, pd.NA),
-                        "pred_type": pred_type_label,
-                        "pred_prominence": pred_row.get("Prominence", pd.NA),
-                        "pred_note": pred_row.get("season_complete", pd.NA),
-                        "delta": delta_days,
-                        "pred_s1_contribution": pred_row.get("s1_contribution", pd.NA),
-                        "pred_s2_contribution": pred_row.get("s2_contribution", pd.NA),
-                        "matched": True
-                    }
-            comparisons.append(build_comparison_dict(obs_row, pred_info, obs_type_label))
-
-    # Match sowings (obs_sowing → future peak → pred_sowing)
-    match_observed_to_predicted(obs_sowings, "future", "obs_sowing", "pred_sowing", "daily_index_smooth", "daily_index_smooth", 0)
-
-    # Match harvests (obs_harvest → last past peak → pred_harvest)
-    match_observed_to_predicted(obs_harvests, "past", "obs_harvest", "pred_harvest", "daily_index", "daily_index", -1)
-
-    # Tillage validation
-    # Filter observed tillages that are within the dormant season
-    obs_tillages_within_dormant = obs_tillages[obs_tillages['in_growing_season'] == False]
-    obs_tillages_in_growing = obs_tillages[obs_tillages['in_growing_season'] == True]
-    
-    #new version
-    #keep all tillages for validation, but split the validation in two
-    #tillages within dormant periods:
-    matched_pred_ids = set()
-    all_preds_in_window = []
-    # Loop over observed tillages
-    for _, obs_row in obs_tillages_within_dormant.iterrows():
-        obs_date = obs_row["Date"]
-        obs_season = obs_row["season_number"]
-
-        # Get predictions in the same dormant season as this observation
-        preds_in_window = pred_tillages[pred_tillages["season_number"] == obs_season].copy()
-              
-        # Remove already matched predictions
-        #preds_in_window = preds_in_window[~preds_in_window.index.isin(matched_pred_ids)]
-
-        all_preds_in_window.append(preds_in_window)
-
-        if preds_in_window.empty:
-            # No match found — store obs_tillage as unmatched
-            pred_info = empty_pred_dict()
-            comparisons.append(build_comparison_dict(obs_row, pred_info, "obs_tillage"))
-        else:
-            # Find closest prediction in time
-            preds_in_window["delta"] = (preds_in_window["Date"] - obs_date).dt.days
-            preds_in_window["abs_delta"] = preds_in_window["delta"].abs()
-            closest_idx = preds_in_window["abs_delta"].idxmin()
-            closest_row = preds_in_window.loc[closest_idx]
-            delta = closest_row["delta"]
-
-            #new version
-            # window_and_coincident = pd.concat([preds_in_window, coincidents], ignore_index=True)
-            # window_and_coincident["delta"] = (window_and_coincident["Date"] - obs_date).dt.days
-            # window_and_coincident["abs_delta"] = window_and_coincident["delta"].abs()
-            # closest_idx = window_and_coincident["abs_delta"].idxmin()
-            # closest_row = window_and_coincident.loc[closest_idx]
-            # delta = closest_row["delta"]
-
-            # Build match entry
-            pred_info = {
-                "pred_date": closest_row["Date"],
-                "pred_value": closest_row.get("daily_index", pd.NA),
-                "pred_type": "pred_tillage",
-                "pred_prominence": closest_row.get("Prominence", pd.NA),
-                "pred_note": "in_dormant_season",
-                "delta": delta,
-                "pred_s1_contribution": closest_row.get("s1_contribution", pd.NA),
-                "pred_s2_contribution": closest_row.get("s2_contribution", pd.NA),
-                "matched": True
-            }
-            comparisons.append(build_comparison_dict(obs_row, pred_info, "obs_tillage"))
-            matched_pred_ids.add(closest_idx)
-
-   #tillages within growing seasons:
-    # Loop over observed tillages in growing season, and find closest match
-    for _, obs_row in obs_tillages_in_growing.iterrows():
-        obs_date = obs_row["Date"]
-        # Find closest prediction in time
-        preds_all = pred_tillages.copy()
-        preds_all["delta"] = (preds_all["Date"] - obs_date).dt.days
-        preds_all["abs_delta"] = preds_all["delta"].abs()
-        closest_idx = preds_all["abs_delta"].idxmin()
-        closest_row = preds_all.loc[closest_idx]
-        delta = closest_row["delta"]
-
-        # Build match entry
-        pred_info = {
-            "pred_date": closest_row["Date"],
-            "pred_value": closest_row.get("daily_index", pd.NA),
-            "pred_type": "pred_tillage",
-            "pred_prominence": closest_row.get("Prominence", pd.NA),
-            "pred_note": "in_growing_season",
-            "delta": delta,
-            "pred_s1_contribution": closest_row.get("s1_contribution", pd.NA),
-            "pred_s2_contribution": closest_row.get("s2_contribution", pd.NA),
-            "matched": True
-        }
-        comparisons.append(build_comparison_dict(obs_row, pred_info, "obs_tillage"))
-
-
-    # Combine all predictions from windows, if any exist
-    if all_preds_in_window:
-        all_preds_in_window_df = pd.concat(all_preds_in_window).drop_duplicates()
-        unmatched_preds = all_preds_in_window_df[~all_preds_in_window_df.index.isin(matched_pred_ids)]
-
-        # Add unmatched predictions
-        for _, row in unmatched_preds.iterrows():
-            pred_info = {
-                "pred_date": row["Date"],
-                "pred_value": row.get("daily_index", pd.NA),
-                "pred_type": "pred_tillage",
-                "pred_prominence": row.get("Prominence", pd.NA),
-                "pred_note": "in_dormant_season",
-                "delta": pd.NA,
-                "pred_s1_contribution": row.get("s1_contribution", pd.NA),
-                "pred_s2_contribution": row.get("s2_contribution", pd.NA),
-                "matched": False
-            }
-            d = {
-                "ID": row.get("ID", pd.NA),
-                "Farm": row.get("Farm", pd.NA),
-                "Country": row.get("Country", pd.NA),
-                "Crop": row.get("Crop", pd.NA),
-                "Crop.type": row.get("Crop.type", pd.NA),
-                "Method_EN": row.get("Method_EN", pd.NA),
-                "obs_date": pd.NA,
-                "obs_type": pd.NA,
-            }
-            d.update(pred_info)
-            comparisons.append(d)
-
-    comparison_df = pd.DataFrame(comparisons).drop_duplicates()
-    return comparison_df
