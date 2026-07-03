@@ -52,9 +52,9 @@ plot_time_series(s1[s1_band], s1['date'], color='blue', title=s1_band, legend = 
 axes[1].set_title(s1_band + " - Sentinel 1", fontsize=14)
 
 # --- Third panel: Hybrid index
-plot_time_series(hybrid_vegetation_index["daily_index"], hybrid_vegetation_index['date'], color='purple', title="hybrid index smoothed", legend = True,
+plot_time_series(hybrid_vegetation_index["daily_index"], hybrid_vegetation_index['date'], color='purple', title="hybrid index unsmoothed", legend = True,
                  add=False, show=False, ax=axes[2], alpha= 0.3)
-plot_time_series(hybrid_vegetation_index["daily_index_smooth"], hybrid_vegetation_index['date'], color='purple', title="hybrid index unsmoothed", legend = True,
+plot_time_series(hybrid_vegetation_index["daily_index_smooth"], hybrid_vegetation_index['date'], color='purple', title="hybrid index smoothed", legend = True,
                  add=True, show=False, ax=axes[2], alpha=1)
 axes[2].set_title("Hybrid vegetation index", fontsize=14)
 

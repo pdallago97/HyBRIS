@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
-import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954
+import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954 and clone the repository from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
 import os
 
 def getID(df, id_value, id_column='ID'):
