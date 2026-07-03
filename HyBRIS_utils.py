@@ -2,6 +2,9 @@ import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
+import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
+import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954
+import os
 
 def getID(df, id_value, id_column='ID'):
     """
@@ -16,6 +19,138 @@ def getID(df, id_value, id_column='ID'):
     pd.DataFrame: A DataFrame containing only the matching rows.
     """
     return df[df[id_column] == id_value]
+
+def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter, output_dir, download = True):
+    field = field.first()
+    # Initialize cloud score collection
+    csPlus = ee.ImageCollection('GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED')
+    csPlusBands = csPlus.first().bandNames()
+
+    def maskLowQA(image):
+        qaBand = 'cs'
+        clearThreshold = 0.5
+        mask = image.select(qaBand).gte(clearThreshold)
+        return image.updateMask(mask)
+
+    # Initialize Sentinel-2 collection
+    collection = (ee.ImageCollection('COPERNICUS/S2_SR_HARMONIZED')
+                .filterBounds(field.geometry())
+                .filterDate(start_date, end_date)
+                .select(bands)
+                .filter(ee.Filter.lt('CLOUDY_PIXEL_PERCENTAGE', cloud_filter))
+                .linkCollection(csPlus, csPlusBands)
+                .map(maskLowQA))
+    
+    def medianBands(image):
+        medianValues = (image
+                        .select(bands)
+                        .reduceRegion(
+                            reducer=ee.Reducer.median(), 
+                            geometry=field.geometry(),
+                            scale=10,
+                            maxPixels=1e8
+                        )
+                        .combine({band: -9999 for band in bands}, overwrite=False))
+        formattedValues = [medianValues.getNumber(band).format('%.4f') for band in bands]
+        date = image.date().format('YYYY-MM-dd')
+        output = [date, field_id] + formattedValues
+        return image.set('output', output)
+
+    timeSeries = (collection.map(medianBands))
+    result = timeSeries.aggregate_array('output').getInfo()
+
+    if download:
+        filename = os.path.join(output_dir, f'Sentinel2_{field_id}.csv')
+        with open(filename, 'w') as out_file:
+            for items in result:
+                line = ','.join([str(item) for item in items])
+                print(line, file=out_file)
+        print("Downloaded Sentinel 2")
+        return filename
+    else:
+        return result
+    
+def get_S1_one_field(field, field_id, bandsusedS1, start_date, end_date, output_dir, download = True):
+    
+    field = field.first()
+
+    collection = (ee.ImageCollection('COPERNICUS/S1_GRD_FLOAT')
+                .filterDate(start_date, end_date)
+                .select(bandsusedS1)
+                .filterBounds(field.geometry())
+                .filter(ee.Filter.eq('instrumentMode', 'IW'))
+                .filter(ee.Filter.eq('resolution_meters', 10))
+                .filter(ee.Filter.listContains('transmitterReceiverPolarisation', 'VH')))
+    
+    # Define parameters for Sentinel-1 preprocessing
+    parameter = {
+        'COLLECTION': collection,
+        'START_DATE': start_date,
+        'STOP_DATE': end_date,
+        'POLARIZATION': 'VVVH',
+        'ORBIT': 'BOTH',
+        'ROI': field.geometry(),
+        'APPLY_BORDER_NOISE_CORRECTION': True,
+        'APPLY_SPECKLE_FILTERING': True,
+        'SPECKLE_FILTER_FRAMEWORK': 'MONO',
+        'SPECKLE_FILTER': 'LEE',
+        'SPECKLE_FILTER_KERNEL_SIZE': 5,
+        'SPECKLE_FILTER_NR_OF_IMAGES': 5,
+        'APPLY_TERRAIN_FLATTENING': True,
+        'DEM': ee.Image('USGS/SRTMGL1_003'),
+        'TERRAIN_FLATTENING_MODEL': 'VOLUME',
+        'TERRAIN_FLATTENING_ADDITIONAL_LAYOVER_SHADOW_BUFFER': 0,
+        'FORMAT': 'DB',
+        'CLIP_TO_ROI': False,
+        'SAVE_ASSET': False,
+        'ASSET_ID': "users/your_username/your_asset_name"  # Replace with your desired asset path
+    }
+
+    # Preprocessed Sentinel-1 collection
+    collection = wp.s1_preproc(parameter)
+    
+    #calculate median
+    def medianBands_S1(image):
+        # Reduce the region for all bands at once
+        medianValues = (image
+                        .select(bandsusedS1)  # Select only the bands of interest
+                        .reduceRegion(
+                            reducer=ee.Reducer.median(),
+                            geometry=field.geometry(),
+                            scale=10,  # Adjust the scale as needed
+                            maxPixels=1e8  # Increase if working with large geometries
+                        )
+                        .combine({band: -9999 for band in bandsusedS1}, overwrite=False))  # Set default values
+
+        # Format median values for output
+        formattedValues = [medianValues.getNumber(band).format('%.4f') for band in bandsusedS1]
+
+        # Add the date
+        date = image.date().format('YYYY-MM-dd')
+
+        # Add the Sentinel 1 specifics
+        orbit = image.get('orbitProperties_pass')
+        orbitNumber = ee.Number(image.get('relativeOrbitNumber_start')) 
+                                                            
+        # Combine all output: [date, fieldID, band1_median, band2_median, ...]
+        output = [date, field_id, orbit, orbitNumber] + formattedValues
+
+        return image.set('output', output)
+    
+    timeSeries = (collection.map(medianBands_S1))
+    
+    result = timeSeries.aggregate_array('output').getInfo()
+
+    if download:
+        filename = os.path.join(output_dir, f'Sentinel1_{field_id}.csv')
+        with open(filename, 'w') as out_file:
+            for items in result:
+                line = ','.join([str(item) for item in items])
+                print(line, file=out_file)
+        print("Done with Sentinel 1")
+        return filename
+    else:
+        return result 
 
 def normalize_percentiles(data, lower_percentile=0.02, upper_percentile=0.98):
     """
