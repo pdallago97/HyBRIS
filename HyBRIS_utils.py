@@ -242,7 +242,7 @@ def add_vis(df):
         df['NDWI'] = normalize_percentiles((df['B8'] - df['B12']) / (df['B8'] + df['B12']))
 
         #EVI
-        df['EVI'] = 2.5 * (df['B8'] - df['B4']) / ((df['B8'] + 6 * df['B4'] - 7.5 * df['B2']) + 1)
+        df['EVI'] = normalize_percentiles(2.5 * (df['B8'] - df['B4']) / ((df['B8'] + 6 * df['B4'] - 7.5 * df['B2']) + 1))
 
     return df
 
