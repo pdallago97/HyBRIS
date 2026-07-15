@@ -23,7 +23,7 @@ hybrid_index.py : runs the code to calculate a generic hybrid index for an examp
 
 HyBRIS_playground.ipynb: Jupyter notebook to load and calculate HyBRIS. Here, the Sentinel-1 and Sentinel-2 contributions per day are explored and plotted.
 
-Dataset/: contains (part of) the dataset used for the research paper, saved as .csv. The sowing, harvest, and tillage dates were recorded for three farms, one in Italy (Vallevecchia), and two in the Netherlands (Valthermond, and Unifarm in Wageningen). The crop type and the georeferenced boundary of each field are reported too.
+Dataset/: contains (part of) the dataset used for the research paper, saved as .csv. The tillage (1), sowing (2), and harvest (3) dates were recorded for three farms, one in Italy (Vallevecchia), and two in the Netherlands (Valthermond, and Unifarm in Wageningen). The crop type is reported as well. The georeferenced boundary of each field are available as a geopackage (.gpkg). This can be linked to the .csv through the unique ID column.
 
 Example/: contains the Sentinel 1 and 2 time series and the ground truth for an example field. These files are used to run the example code
 
