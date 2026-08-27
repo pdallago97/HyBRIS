@@ -1,0 +1,16 @@
+[workspace]
+authors = ["pdallago97 <paolo.dallago@wur.nl>"]
+channels = ["conda-forge"]
+name = "HyBRIS"
+platforms = ["win-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+python = ">=3.14.7,<3.15"
+pandas = ">=3.0.5,<4"
+numpy = ">=2.5.2,<3"
+scipy = ">=1.18.0,<2"
+matplotlib = ">=3.11.1,<4"
+earthengine-api = ">=1.7.41,<2"
