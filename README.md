@@ -19,15 +19,27 @@ Please refer to DOI for more information: https://www.sciencedirect.com/science/
 pip install hybris
 ```
 
+## Requirements
+
+- Google Earth Engine authentication via
+https://developers.google.com/earth-engine/apidocs/ee-authenticate
+
+- Google Earth Engine initialization via
+https://developers.google.com/earth-engine/apidocs/ee-initialize
+
+- Sentinel-1 preprocessing package:
+https://github.com/adugnag/gee_s1_ard
+
 To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api:
 
 ```bash
 pip install "hybris[gee]"
 ```
-When your Google Earth Engine project is setup, it needs to be authenticated ([![ee.Authenticate()](https://developers.google.com/earth-engine/apidocs/ee-authenticate)]) and initialized ([![ee.Initialize()](https://developers.google.com/earth-engine/apidocs/ee-initialize)]).
+
+When your Google Earth Engine project is setup, it needs to be authenticated and initialized.
 
  The Sentinel-1 preprocessing function uses the `gee_s1_ard` Python API; see its
-installation instructions in the function documentation [![gee_s1_ard](https://github.com/adugnag/gee_s1_ard)].
+installation instructions in the function documentation. Clone the repository (https://github.com/adugnag/gee_s1_ard) inside the python environment you are using to make it work.
 
 ## Quickstart
 
@@ -35,10 +47,8 @@ The example below reads prepared field-level CSV files, creates optical and
 radar indices, fuses them into a daily series, and detects farming events.
 
 ```python
-from hybris import (
-    openSentinel1file, openSentinel2file, add_vis, add_vis_radar,
-    calculate_hybris_vectorized, find_maxima, find_minima,
-)
+from hybris import (openSentinel1file, openSentinel2file, add_vis, add_vis_radar,
+    calculate_hybris_vectorized, find_maxima, find_minima)
 
 bands_s2 = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
 bands_s1 = ["VV", "VH", "angle"]
@@ -79,10 +89,12 @@ docs/           Figures and supporting documentation
 tests/          Package smoke tests
 ```
 
-## Documentation
+## Examples
 
-- [API and supporting documentation](docs/)
 - [Runnable examples](examples/)
+
+## More information
+
 - [Research paper](https://doi.org/10.1016/j.rse.2026.115553)
 
 ## Citation
