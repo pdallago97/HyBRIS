@@ -2,9 +2,28 @@ import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
-import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
-import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954 and clone the repository from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
 import os
+
+def _require_ee():
+    try:
+        import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
+    except ImportError as e:
+        raise ImportError(
+            "This function needs the Earth Engine API: pip install 'hybris[gee]'"
+        ) from e
+    return ee
+
+def _require_s1_ard():
+    try:
+        import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954 and clone the repository from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
+
+    except ImportError as e:
+        raise ImportError(
+            "get_S1_one_field needs gee_s1_ard (Mullissa et al. 2021). "
+            "It is not on PyPI: clone https://github.com/adugnag/gee_s1_ard and "
+            "make its python-api folder importable."
+        ) from e
+    return wp
 
 def getID(df, id_value, id_column='ID'):
     """
@@ -21,6 +40,7 @@ def getID(df, id_value, id_column='ID'):
     return df[df[id_column] == id_value]
 
 def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter, output_dir, download = True):
+    ee = _require_ee()
     field = field.first()
     # Initialize cloud score collection
     csPlus = ee.ImageCollection('GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED')
@@ -71,6 +91,8 @@ def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter,
         return result
     
 def get_S1_one_field(field, field_id, bandsusedS1, start_date, end_date, output_dir, download = True):
+    ee = _require_ee()
+    wp = _require_s1_ard()
     
     field = field.first()
 
