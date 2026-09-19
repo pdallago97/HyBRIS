@@ -3,12 +3,14 @@
 [![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/)
 [![License](https://img.shields.io/pypi/l/hybris.svg)](LICENSE)
 
-Optical, radar, and hybrid indices for detecting farming practices from
-Sentinel-1 and Sentinel-2 time series.
+Optical, radar, and hybrid indices: handling Sentinel-1 and Sentinel-2 time series.
 
 Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, and Kirsten de Beurs
-at the Laboratory of Geo-Information Science and Remote Sensing, Wageningen
+
+Laboratory of Geo-Information Science and Remote Sensing, Wageningen
 University & Research.
+
+DOI: https://doi.org/10.1016/j.rse.2026.115553.
 
 ## Install
 
@@ -22,9 +24,9 @@ To use the Google Earth Engine download functions:
 pip install "hybris[gee]"
 ```
 
-Earth Engine must also be authenticated and initialized. The Sentinel-1 ARD
-download function additionally uses the `gee_s1_ard` Python API; see its
-installation instructions in the function documentation.
+Earth Engine must also be authenticated and initialized. The Sentinel-1 preprocessing
+function uses the `gee_s1_ard` Python API; see its
+installation instructions in the function documentation [![gee_s1_ard](https://github.com/adugnag/gee_s1_ard)].
 
 ## Quickstart
 
@@ -64,7 +66,7 @@ to estimate a physically true variable. Because percentile normalization is
 computed over the selected observation period, the time range affects the
 index amplitude.
 
-![Calculation of HyBRIS from inverted BSI and VH/VV](https://raw.githubusercontent.com/pdallago97/HyBRIS/main/docs/images/figure2.png)
+![Calculation of HyBRIS from inverted BSI (Sentinel-2) and VH/VV (Sentinel-1)](https://raw.githubusercontent.com/pdallago97/HyBRIS/main/docs/images/figure2.png)
 
 ## Repository layout
 
