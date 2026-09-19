@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "hybris"                    # change if taken on PyPI
-version = "0.1.0"
+name = "hybris"                   
+version = "0.1.1"
 description = "Optical, radar, and hybrid indices to detect farming practices"
 readme = "README.md"
 requires-python = ">=3.10"
