@@ -728,61 +728,61 @@ def wrapper_radar_band(s1_path, bandsusedS1, s1_band, gt):
     :func:`wrapper_optical_band`.
     """
 
-        s1 = openSentinel1file(s1_path, bandsusedS1)
+    s1 = openSentinel1file(s1_path, bandsusedS1)
 
-        # Calculate daily index with both S1 orbits separately
-        s1_asc = s1[s1['orbit'] == 'ASCENDING']  # Select only ascending orbits
-        s1_des = s1[s1['orbit'] == 'DESCENDING']  # Select only descending orbits
+    # Calculate daily index with both S1 orbits separately
+    s1_asc = s1[s1['orbit'] == 'ASCENDING']  # Select only ascending orbits
+    s1_des = s1[s1['orbit'] == 'DESCENDING']  # Select only descending orbits
 
-        s1_des = selectOrbit(s1_des, selectMostPresent=True) # Select only most present orbit
-        s1_asc = selectOrbit(s1_asc, selectMostPresent=True) # Select only most present orbit
+    s1_des = selectOrbit(s1_des, selectMostPresent=True) # Select only most present orbit
+    s1_asc = selectOrbit(s1_asc, selectMostPresent=True) # Select only most present orbit
 
-        # Use both S1 orbits
-        s1_des = add_vis_radar(s1_des)
-        s1_asc = add_vis_radar(s1_asc)
-        s1 = pd.concat([s1_des, s1_asc], ignore_index=True) 
+    # Use both S1 orbits
+    s1_des = add_vis_radar(s1_des)
+    s1_asc = add_vis_radar(s1_asc)
+    s1 = pd.concat([s1_des, s1_asc], ignore_index=True) 
 
-        # Retrieve management data for this field
-        id = int(s1['ID'].unique()[0])
-        field = getID(gt, id)
+    # Retrieve management data for this field
+    id = int(s1['ID'].unique()[0])
+    field = getID(gt, id)
 
-        ########### USING THE SAME LOGIC FOR HYBRIS TO ONE BAND DATASETS
-        # Interpolate missing values using linear interpolation
-        s1["daily_index"] = (s1[s1_band]
-            .interpolate(method="linear")  # Fill missing values
-        )
+    ########### USING THE SAME LOGIC FOR HYBRIS TO ONE BAND DATASETS
+    # Interpolate missing values using linear interpolation
+    s1["daily_index"] = (s1[s1_band]
+        .interpolate(method="linear")  # Fill missing values
+    )
 
-        s1['daily_index_smooth'] = s1["daily_index"].rolling(window=30, center=True, min_periods=1).mean()  # Apply rolling average
+    s1['daily_index_smooth'] = s1["daily_index"].rolling(window=30, center=True, min_periods=1).mean()  # Apply rolling average
+    
+    #Find maxima and minima in the fused time series
+    maxima = find_maxima(s1) #Peaks of seasons
+    minima = find_minima(s1, prominenceMin = 0.1, distanceTillages=30, prominenceTillages=(0,1)) #Sowing, harvest, tillage
+
+    #Identify growing seasons based on predicted minima
+    g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+
+    #Add tillage predictions
+    predictions = add_tillages(g_seasons, minima)
+
+    #Check if field exists
+    if field.empty:
+        print(f"Field ID {id} not found in ground truth data.")
+
+    #If field exists, proceed with analysis    
+    else:
+
+        #Merge with predictions
+        s1 = add_predictions(s1, predictions)
         
-        #Find maxima and minima in the fused time series
-        maxima = find_maxima(s1) #Peaks of seasons
-        minima = find_minima(s1, prominenceMin = 0.1, distanceTillages=30, prominenceTillages=(0,1)) #Sowing, harvest, tillage
+        # Convert Date columns to datetime format
+        field.loc[:, 'Date'] = pd.to_datetime(field['Date'], errors='coerce')
 
-        #Identify growing seasons based on predicted minima
-        g_seasons = growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+        s1 = merge_with_GT(s1, field)
+        s1["ID"] = int(s1['ID'].unique()[0])
 
-        #Add tillage predictions
-        predictions = add_tillages(g_seasons, minima)
+        results = validate_predictions(s1)
 
-        #Check if field exists
-        if field.empty:
-            print(f"Field ID {id} not found in ground truth data.")
-
-        #If field exists, proceed with analysis    
-        else:
-
-            #Merge with predictions
-            s1 = add_predictions(s1, predictions)
-            
-            # Convert Date columns to datetime format
-            field.loc[:, 'Date'] = pd.to_datetime(field['Date'], errors='coerce')
-
-            s1 = merge_with_GT(s1, field)
-            s1["ID"] = int(s1['ID'].unique()[0])
-
-            results = validate_predictions(s1)
-
-            return results, s1
+        return results, s1
 
 
 def find_maxima(hybris, distancePOS=60, prominencePOS=(0.1, 1)):
