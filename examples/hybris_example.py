@@ -1,12 +1,19 @@
-from HyBRIS_utils import *
+import pandas as pd
+import numpy as np
+from scipy.signal import find_peaks
+import matplotlib.pyplot as plt
+import os
+from hybris import (openSentinel2file, openSentinel1file, selectOrbit, add_vis, add_vis_radar, normalize_percentiles,
+                    daily_index_with_contributions_vectorized, calculate_hybris_vectorized, find_maxima, find_minima, growing_seasons, add_tillages, add_predictions, merge_with_GT, validate_predictions,
+                    filter_by_date, plot_hybris, plot_time_series, get_S2_one_field, get_S1_one_field)
 
 #Ground truth data with sowing and harvest dates
-field = pd.read_csv('Example/GroundTruth_example.csv')
+field = pd.read_csv('examples/data/GroundTruth_example.csv')
 field['Date'] = pd.to_datetime(field['Date']) #make sure the date column is in datetime format
 
 #paths to example data files, the Sentinel 1 and 2 time series
-s2_path = 'Example/Sentinel2_example.csv'
-s1_path = 'Example/Sentinel1_example.csv'
+s2_path = 'examples/data/Sentinel2_example.csv'
+s1_path = 'examples/data/Sentinel1_example.csv'
 
 #define start and end date for examples (indices will be plotted in this range)
 start_date = pd.to_datetime("2019-01-01")

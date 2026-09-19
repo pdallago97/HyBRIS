@@ -2,9 +2,52 @@ import pandas as pd
 import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
-import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
-import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954 and clone the repository from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
 import os
+
+def _require_ee():
+    """Import and return the optional Google Earth Engine client.
+
+    Returns
+    -------
+    module
+        The imported :mod:`ee` module.
+
+    Raises
+    ------
+    ImportError
+        If the optional ``gee`` dependency is not installed.
+    """
+    try:
+        import ee #to use the Google Earth Engine library, you need to authenticate and initialize it first (ee.Initialize()/ee.Authenticate())
+    except ImportError as e:
+        raise ImportError(
+            "This function needs the Earth Engine API: pip install 'hybris[gee]'"
+        ) from e
+    return ee
+
+def _require_s1_ard():
+    """Import and return the optional Sentinel-1 ARD wrapper.
+
+    Returns
+    -------
+    module
+        The ``gee_s1_ard.wrapper`` module.
+
+    Raises
+    ------
+    ImportError
+        If the external ``gee_s1_ard`` Python API is not importable.
+    """
+    try:
+        import gee_s1_ard.wrapper as wp #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954 and clone the repository from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
+
+    except ImportError as e:
+        raise ImportError(
+            "get_S1_one_field needs gee_s1_ard (Mullissa et al. 2021). "
+            "It is not on PyPI: clone https://github.com/adugnag/gee_s1_ard and "
+            "make its python-api folder importable."
+        ) from e
+    return wp
 
 def getID(df, id_value, id_column='ID'):
     """
@@ -21,12 +64,42 @@ def getID(df, id_value, id_column='ID'):
     return df[df[id_column] == id_value]
 
 def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter, output_dir, download = True):
+    """Download Sentinel-2 observations and field-level band medians.
+
+    The function filters Sentinel-2 SR imagery by geometry, date, cloud
+    percentage, and Cloud Score Plus quality, then reduces each image over
+    the field geometry. Earth Engine must be authenticated and initialized.
+
+    Parameters
+    ----------
+    field : ee.FeatureCollection
+        Collection containing the field geometry; its first feature is used.
+    field_id : object
+        Identifier written to each output record and filename.
+    bands : sequence of str
+        Sentinel-2 bands to select and reduce.
+    start_date, end_date : str
+        Inclusive start and exclusive end dates accepted by Earth Engine.
+    cloud_filter : float
+        Maximum ``CLOUDY_PIXEL_PERCENTAGE``.
+    output_dir : path-like
+        Directory for the CSV when ``download`` is true.
+    download : bool, default True
+        Return a CSV path when true; otherwise return the Earth Engine result.
+
+    Returns
+    -------
+    str or list
+        Output CSV path, or the list of per-image records when not downloading.
+    """
+    ee = _require_ee()
     field = field.first()
     # Initialize cloud score collection
     csPlus = ee.ImageCollection('GOOGLE/CLOUD_SCORE_PLUS/V1/S2_HARMONIZED')
     csPlusBands = csPlus.first().bandNames()
 
     def maskLowQA(image):
+        """Mask pixels whose Cloud Score Plus score is below 0.5."""
         qaBand = 'cs'
         clearThreshold = 0.5
         mask = image.select(qaBand).gte(clearThreshold)
@@ -42,6 +115,7 @@ def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter,
                 .map(maskLowQA))
     
     def medianBands(image):
+        """Compute field medians and attach a serializable output record."""
         medianValues = (image
                         .select(bands)
                         .reduceRegion(
@@ -71,6 +145,35 @@ def get_S2_one_field(field, field_id, bands, start_date, end_date, cloud_filter,
         return result
     
 def get_S1_one_field(field, field_id, bandsusedS1, start_date, end_date, output_dir, download = True):
+    """Download preprocessed Sentinel-1 field-level band medians.
+
+    Sentinel-1 IW, 10 m imagery is preprocessed with ``gee_s1_ard`` using
+    border-noise correction, speckle filtering, and terrain flattening.
+    Earth Engine must be authenticated and initialized before calling this
+    function.
+
+    Parameters
+    ----------
+    field : ee.FeatureCollection
+        Collection containing the field geometry; its first feature is used.
+    field_id : object
+        Identifier written to each output record and filename.
+    bandsusedS1 : sequence of str
+        Sentinel-1 bands to reduce after preprocessing.
+    start_date, end_date : str
+        Date range accepted by Earth Engine.
+    output_dir : path-like
+        Directory for the CSV when ``download`` is true.
+    download : bool, default True
+        Return a CSV path when true; otherwise return the result records.
+
+    Returns
+    -------
+    str or list
+        Output CSV path, or the list of per-image records when not downloading.
+    """
+    ee = _require_ee()
+    wp = _require_s1_ard()
     
     field = field.first()
 
@@ -111,6 +214,7 @@ def get_S1_one_field(field, field_id, bandsusedS1, start_date, end_date, output_
     
     #calculate median
     def medianBands_S1(image):
+        """Compute field medians and attach orbit metadata to the record."""
         # Reduce the region for all bands at once
         medianValues = (image
                         .select(bandsusedS1)  # Select only the bands of interest
@@ -483,15 +587,41 @@ def daily_index_with_contributions_vectorized(
         return daily_data
 
 def calculate_hybris_vectorized(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDiff=12): 
-    """
-    Calculate the Hybris index using Sentinel-1 and Sentinel-2 data.
-    Args:
-        s1 (pd.DataFrame): Sentinel-1 data with columns 'date', 'VV_VH', and 'ID'.
-        s2 (pd.DataFrame): Sentinel-2 data with columns 'date', 'BSI', and 'ID'.
-        bandS2 (str): Band name for Sentinel-2 data (default: 'BSI').
-        bandS1 (str): Band name for Sentinel-1 data (default: 'VV_VH').
-    Returns:
-        pd.DataFrame: A DataFrame containing the Hybris index, smoothed index, and ID.
+    """Compute a daily HyBRIS hybrid index from Sentinel-1 and Sentinel-2.
+
+    The selected optical and radar series are fused with a temporally weighted
+    mean. Observations closer to each target day receive higher weights. When
+    ``bandS2`` is ``"BSI"``, the resulting index is inverted so higher values
+    follow the vegetation-oriented convention used by HyBRIS.
+
+    Parameters
+    ----------
+    s1 : pandas.DataFrame
+        Processed Sentinel-1 series with ``date`` and ``bandS1`` columns.
+    s2 : pandas.DataFrame
+        Processed Sentinel-2 series with ``date``, ``ID``, and ``bandS2``.
+    bandS2 : str, default 'BSI'
+        Optical index column to fuse.
+    bandS1 : str, default 'VV_VH'
+        Radar index column to fuse.
+    maxDiff : int, default 12
+        Half-width, in days, of the temporal window around each target day.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Daily series containing ``date``, ``daily_index``,
+        ``daily_index_smooth``, sensor contributions, ``ID``, and ``ID_date``.
+
+    Notes
+    -----
+    Percentile normalization uses the 2nd and 98th percentiles of the input
+    period, so the index amplitude depends on the selected time range.
+
+    Examples
+    --------
+    >>> hybris = calculate_hybris_vectorized(s1, s2)
+    >>> minima = find_minima(hybris)
     """
         
     #Calculate fused index using BSI and VV_VH
@@ -514,6 +644,25 @@ def calculate_hybris_vectorized(s1, s2, bandS2 = 'BSI', bandS1 = 'VV_VH', maxDif
 
 # Function to process a single field to store minima dates and ground truth dates
 def wrapper_optical_band(s2_path, bandsused, s2_band, gt):
+    """Run single-band optical event detection and ground-truth validation.
+
+    Parameters
+    ----------
+    s2_path : path-like
+        Sentinel-2 CSV in the format consumed by :func:`openSentinel2file`.
+    bandsused : sequence of str
+        Sentinel-2 reflectance columns present in the CSV.
+    s2_band : str
+        Derived optical index used for interpolation and event detection.
+    gt : pandas.DataFrame
+        Ground-truth events containing ``ID`` and event-date columns.
+
+    Returns
+    -------
+    tuple or None
+        Validation results and the merged time series, or ``None`` when the
+        field ID is absent from ``gt``.
+    """
     
     # Open Sentinel-2 and Sentinel-1 files
     s2 = add_vis(openSentinel2file(s2_path, bandsused))
@@ -571,6 +720,13 @@ def wrapper_optical_band(s2_path, bandsused, s2_band, gt):
 
 
 def wrapper_radar_band(s1_path, bandsusedS1, s1_band, gt):
+    """Run single-band radar event detection and ground-truth validation.
+
+    Both ascending and descending Sentinel-1 series are reduced to their most
+    frequently observed relative orbit before radar indices are calculated.
+    The return value and ground-truth requirements match
+    :func:`wrapper_optical_band`.
+    """
 
         s1 = openSentinel1file(s1_path, bandsusedS1)
 
@@ -760,6 +916,19 @@ def find_minima(hybris, distanceMin=15, prominenceMin=(0.1, 1), distanceTillages
     return pd.DataFrame(minima)
 
 def growing_seasons(maxima, minima):
+    """Pair detected peaks with the nearest surrounding sowing and harvest.
+
+    Parameters
+    ----------
+    maxima, minima : pandas.DataFrame
+        Outputs of :func:`find_maxima` and :func:`find_minima`.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Long-format rows for predicted sowing, peak, and harvest events. Each
+        row includes ``season_id``, ``season_complete``, and ``season_length``.
+    """
     # Filter only sowing and harvest events
     sowings = minima[minima["Type"] == "sowing"].sort_values("Date")
     harvests = minima[minima["Type"] == "harvest"].sort_values("Date")
@@ -893,6 +1062,24 @@ def add_tillages(g_seasons, minima):
     return results
 
 def add_predictions(hybris, predictions):
+    """Merge predicted events into a time series and label growing seasons.
+
+    Tillage predictions occurring inside a growing season are relabeled as
+    ``pred_tillage_excluded`` unless they coincide with a phenological event.
+
+    Parameters
+    ----------
+    hybris : pandas.DataFrame
+        Time series with a ``date`` column and event-related index columns.
+    predictions : pandas.DataFrame
+        Event table from :func:`add_tillages`.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Date-level series with prediction columns, ``in_growing_season``, and
+        ``season_number``.
+    """
 
     hybris = hybris.copy().rename(columns={"date": "Date"})
     # Merge hybris time series with predicted events
@@ -953,6 +1140,20 @@ def add_predictions(hybris, predictions):
     return predictions
 
 def merge_with_GT(merged, ground_truth): 
+    """Join observed management events and field metadata to predictions.
+
+    Parameters
+    ----------
+    merged : pandas.DataFrame
+        Predicted time series containing a ``Date`` column.
+    ground_truth : pandas.DataFrame
+        Events and metadata with ``Date`` and ``Ti.1_So.2_Ha.3`` columns.
+
+    Returns
+    -------
+    pandas.DataFrame
+        Merged data with ``obs_type``, crop metadata, farm, and country.
+    """
     # Prep inputs
     merged = merged.copy().rename(columns={"date": "Date"})
     ground_truth = ground_truth.copy()
@@ -975,6 +1176,7 @@ def merge_with_GT(merged, ground_truth):
 
 
 def _ensure_datetime_and_sort(df, date_col="Date"):
+    """Copy, normalize dates, and sort a validation frame by field and date."""
     df = df.copy()
     df[date_col] = pd.to_datetime(df[date_col])
     df = df.sort_values([ "ID", date_col ]).reset_index(drop=False)  # keep original index in 'index' column
@@ -983,6 +1185,7 @@ def _ensure_datetime_and_sort(df, date_col="Date"):
     return df
 
 def _empty_pred_dict():
+    """Return the standard empty prediction payload used by validation."""
     return {
         "pred_date": pd.NA,
         "pred_value": pd.NA,
@@ -996,6 +1199,7 @@ def _empty_pred_dict():
     }
 
 def _build_comparison_dict(obs_row, pred_info, obs_type_label):
+    """Combine observed-row metadata with a prediction payload."""
     d = {
         "ID": obs_row["ID"],
         "Farm": obs_row.get("Farm", pd.NA),
@@ -1010,11 +1214,28 @@ def _build_comparison_dict(obs_row, pred_info, obs_type_label):
     return d
 
 def _choose_peak_for_obs(peaks_df, obs_date, direction="future"):
-    """
-    peaks_df must be sorted by Date ascending.
-    direction: "future" -> earliest peak strictly after obs_date
-            "past"   -> latest peak strictly before obs_date
-    Returns the peak row (as Series) or None.
+    """Select the nearest qualifying peak on one side of an observation.
+
+    ``peaks_df`` must be sorted by ``Date`` ascending. ``direction`` may be
+    ``"future"`` for the earliest later peak or ``"past"`` for the latest
+    earlier peak.
+
+    The original matching rule is strict: a future peak must be after the
+    observation date and a past peak must be before it.
+
+    Parameters
+    ----------
+    peaks_df : pandas.DataFrame
+        Peak rows sorted by ``Date``.
+    obs_date : pandas.Timestamp
+        Observed event date.
+    direction : {"future", "past"}, default "future"
+        Side of the observation from which to select.
+
+    Returns
+    -------
+    pandas.Series or None
+        Selected peak row, or ``None`` when no qualifying peak exists.
     """
     if peaks_df.empty:
         return None
@@ -1032,8 +1253,11 @@ def _choose_peak_for_obs(peaks_df, obs_date, direction="future"):
         return candidates.iloc[-1]  # latest before cutoff
 
 def _select_pred_within_season(merged_df, season_id, ID, pred_type_label, obs_date):
-    """
-    From merged_df select rows with given season_id, ID and pred_type_label.
+    """Select the prediction closest to an observed event in one season.
+
+    From ``merged_df``, select rows with the given season, field, and event
+    type, then return the row with the smallest absolute date difference.
+
     If multiple rows exist, choose the one closest in absolute days to obs_date.
     Returns the selected row (Series) or None.
     """
@@ -1050,6 +1274,7 @@ def _select_pred_within_season(merged_df, season_id, ID, pred_type_label, obs_da
     return chosen
 
 def _match_sowings_and_harvests(merged, peaks, obs_rows, direction, obs_type_label, pred_type_label):
+    """Match observed sowing or harvest rows to predictions by season."""
     comparisons = []
     # ensure peaks sorted by Date per ID
     peaks_sorted = peaks.sort_values(["ID", "Date"])
@@ -1081,7 +1306,9 @@ def _match_sowings_and_harvests(merged, peaks, obs_rows, direction, obs_type_lab
     return comparisons
 
 def _match_tillages(merged, pred_tillages, coincidents, obs_tillages, one_to_one_tillage_match=True, add_window_for_tillages=True):
-    """
+
+    """Match observed tillages and append unmatched dormant-season predictions.
+
     Returns list of comparison dicts for tillages and also returns unmatched prediction rows as comparison dicts
     (same structure as original function).
     - pred_tillages: DataFrame of predicted tillages (must include original index column '_orig_index')
@@ -1220,11 +1447,16 @@ def _match_tillages(merged, pred_tillages, coincidents, obs_tillages, one_to_one
 
 def validate_predictions(merged, one_to_one_tillage_match=True, add_window_for_tillages=False):
     """
-    Replacement for validate_predictions.
+    Compare observed management events with predicted events.
     - merged: input DataFrame with Date, pred_type, obs_type, season_id, season_number, ID, etc.
     - one_to_one_tillage_match: if True, ensure a predicted tillage is matched at most once
     - add_window_for_tillages: if True, apply 30-day window rule for tillages in growing season
-    Returns: comparison_df with same columns as original function output.
+    Returns
+    -------
+    pandas.DataFrame
+        One comparison row per observed event plus unmatched dormant-season
+        tillage predictions. Prediction dates, signed day deltas, event types,
+        sensor contributions, and a ``matched`` flag are included.
     """
     # Prepare data and keep original indices
     merged_prepared = _ensure_datetime_and_sort(merged, date_col="Date")
@@ -1274,6 +1506,32 @@ def filter_by_date(df, start_date, end_date, date_column='date'):
 ######### VISUALIZATION #########
 
 def plot_hybris(hybris, plot_tillages = True, plot_dormant=False, add_groundtruth = True, add_pred_sow_harv=True, ax = None, date_col = 'date', color = 'brown', legend = True, alpha_smooth = 1, alpha_raw = 0.3):
+    """Plot a HyBRIS series with optional events and dormant periods.
+
+    Parameters
+    ----------
+    hybris : pandas.DataFrame
+        Series containing the selected date column and HyBRIS columns. Event
+        overlays use ``pred_type``, ``obs_type``, and ``in_growing_season``.
+    plot_tillages, plot_dormant, add_groundtruth, add_pred_sow_harv : bool
+        Enable the corresponding prediction, shading, observation, and
+        phenology overlays.
+    ax : matplotlib.axes.Axes, optional
+        Existing axes to draw on. A new 12-by-5 inch axes is created otherwise.
+    date_col : str, default 'date'
+        Date column to plot.
+    color : str, default 'brown'
+        Color for the raw and smoothed series.
+    legend : bool, default True
+        Whether to add an outside legend.
+    alpha_smooth, alpha_raw : float
+        Opacity of the smoothed and raw lines.
+
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes containing the plot.
+    """
     
     if ax is None:
         fig, ax = plt.subplots(figsize=(12, 5))
@@ -1367,9 +1625,11 @@ def plot_time_series(values, dates, groundtruth=None, season_boundaries=None,
                       tillages = None, tillage_windows = None, dormant_periods = None, color='gray',
                         title="Time Series", add = False, show = True, alpha = 1, marker = None,
                         ax = None, legend = True):
-    """
-    Plots a time series and optionally adds vertical lines for events in the groundtruth DataFrame.
-    It also overlays detected Start of Season (SOS), End of Season (EOS), and Peak points.
+    """Plot a time series and optional observations, predictions, and windows.
+
+    Ground-truth event codes are interpreted as 1=tillage, 2=sowing, and
+    3=harvest. Optional season boundaries, tillage windows, and dormant
+    periods are overlaid when their expected columns are present.
 
     Parameters:
     -----------
@@ -1391,9 +1651,10 @@ def plot_time_series(values, dates, groundtruth=None, season_boundaries=None,
     title : str, optional (default="Time Series")
         Title of the plot.
 
-    Returns:
-    --------
-    None
+    Returns
+    -------
+    matplotlib.axes.Axes
+        Axes containing the plot.
     """
     # Create new axes only if add is False and no ax is passed
     if add is False and ax is None:

@@ -1,53 +1,108 @@
-**Optical, radar, and hybrid indices to detect farming practices in Europe**
+# HyBRIS
+
+[![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/)
+[![License](https://img.shields.io/pypi/l/hybris.svg)](LICENSE)
+
+## Optical, radar, and hybrid indices to detect farming practices in Europe
+
+This package offers functions and tools to handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
 
 Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
 
-*Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research*
+Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
 
 Please refer to DOI for more information: https://www.sciencedirect.com/science/article/pii/S0034425726003238
 
--------------------------------------------------------------------------------------------------------------
-*Summary*
+## Install
 
-A temporally weighted mean is used to integrate SAR and optical indices into a daily hybrid index. Weighted averaging emphasizes coincident temporal patterns, fills data gaps emerging from irregular acquisitions, and helps reduce sensor-specific noise. This integration aims at stabilizing complementary signals, not to estimate a physically true variable. A new index is obtained, but not a new physical unit, as both optical and radar indices are inherently unitless. Local minima and maxima of the time series are used to detect farming practices across European sites without relying on complex line-fitting functions. This field-level methodology accounts for multiple growing seasons, achieving strong generalizability across indices, years, locations, and crop types. Building on previous pixel-level approaches for monitoring bare soil periods (Lobert et al., 2025; Mzid et al., 2021), the developed methodology allows the calculation of Dormant Days, as a novel field-level, multi-sensor metric for quantifying dormant periods over long time series. 
+```bash
+pip install hybris
+```
 
--------------------------------------------------------------------------------------------------------------
-*Folder structure:*
+## Requirements
 
+- Google Earth Engine authentication via
+https://developers.google.com/earth-engine/apidocs/ee-authenticate
 
-HyBRIS_utils.py : contains all the functions to download Sentinel 1 and Sentinel 2 data, calculate hybrid indices, and apply the minMax method to detect farming practices.
+- Google Earth Engine initialization via
+https://developers.google.com/earth-engine/apidocs/ee-initialize
 
-HyBRIS_example.py : runs the code to calculate HyBRIS for an example field, detects sowing, harvests, and tillage dates, and plot results.
+- Sentinel-1 preprocessing package:
+https://github.com/adugnag/gee_s1_ard
 
-hybrid_index.py : runs the code to calculate a generic hybrid index for an example field and plot results.
+To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api:
 
-HyBRIS_playground.ipynb: Jupyter notebook to load and calculate HyBRIS. Here, the Sentinel-1 and Sentinel-2 contributions per day are explored and plotted.
+```bash
+pip install "hybris[gee]"
+```
 
-Dataset/: contains (part of) the dataset used for the research paper, saved as .csv. The tillage (1), sowing (2), and harvest (3) dates were recorded for three farms, one in Italy (Vallevecchia), and two in the Netherlands (Valthermond, and Unifarm in Wageningen). The crop type is reported as well. The georeferenced boundary of each field are available as a geopackage (.gpkg). This can be linked to the .csv through the unique ID column.
+When your Google Earth Engine project is setup, it needs to be authenticated and initialized.
 
-Example/: contains the Sentinel 1 and 2 time series and the ground truth for an example field. These files are used to run the example code
+ The Sentinel-1 preprocessing function uses the `gee_s1_ard` Python API; see its
+installation instructions in the function documentation. Clone the repository (https://github.com/adugnag/gee_s1_ard) inside the python environment you are using to make it work.
 
--------------------------------------------------------------------------------------------------------------
-*Calculation of a daily hybrid index*
+## Quickstart
 
-Here, two indices (one optical, one radar) sensitive to soil roughness and bare soil exposure are combined to detect sowing, harvesting, and tillage events: the inverted Bare Soil Index (1 - BSI) from Sentinel-2 (a) and the VH/VV index from Sentinel-1 (b). The normalization step ensures the values of BSIinv and VH/VV to be within the [0, 1] range.
+The example below reads prepared field-level CSV files, creates optical and
+radar indices, fuses them into a daily series, and detects farming events.
 
-With this combination, we developed the daily Hybrid Bare Soil Radar Index (HyBRIS) (c). To calculate HyBRIS for each day, a temporal window of ±12 days was adopted.  This window size ensures the inclusion of at least two radar acquisitions from the same orbit before and after the target day, given the 12-day revisit cycle of each orbit of Sentinel 1, and increases the likelihood of incorporating cloud-free optical observations during persistently cloudy periods.
+```python
+from hybris import (openSentinel1file, openSentinel2file, add_vis, add_vis_radar,
+    calculate_hybris_vectorized, find_maxima, find_minima)
 
-The Sentinel-1 and -2 observations acquired within this window are considered, and aggregated with a weighted mean. Expanding the window had minimal impact on the aggregated index values, as the weighting mean reduces the influence of observations further from the target day.
+bands_s2 = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
+bands_s1 = ["VV", "VH", "angle"]
+s2 = add_vis(openSentinel2file("examples/data/Sentinel2_example.csv", bands_s2))
+s1 = add_vis_radar(openSentinel1file("examples/data/Sentinel1_example.csv", bands_s1))
+hybris = calculate_hybris_vectorized(s1, s2)
+maxima = find_maxima(hybris)
+minima = find_minima(hybris)
+```
 
-This way, images acquired closer to the target day have higher weights and contribute more to the fused index, while images acquired further from each day have lower weights. 
+For a complete workflow including orbit selection, ground truth, validation,
+and plots, run [`examples/hybris_example.py`](examples/hybris_example.py).
 
-Next, a smoothed time series was calculated for HyBRIS and for each optical and radar index using a centered rolling mean with a window of ±15 days. Both smoothed and unsmoothed time series were then used to detect farming practices.
+## Method summary
 
-!<img width="11693" height="5529" alt="Figure2" src="https://github.com/user-attachments/assets/6e7cb8b0-f6c0-493f-a0cd-da521e2e7a38" />
+The HyBRIS methodology combines one optical and one radar index into a daily, field-level time series.
+Here, Sentinel-2 observations of the Bare Soil Index (BSI) and Sentinel-1
+VH/VV observations are normalized and aggregated with a temporally weighted
+mean within a +/-12-day window. Closer observations have greater influence,
+which helps bridge irregular acquisitions and sensor-specific gaps. A
+centered rolling mean is used alongside the unsmoothed series to detect local
+minima and maxima associated with sowing, harvest, and tillage.
 
-Note that the considered length of the time series influences the amplitude of the time series itself. This is due to the normalization process done with percentiles (0.02-0.98) within the observation period.
+The index is unitless and is intended to stabilize complementary signals, not
+to estimate a physically true variable. Because percentile normalization is
+computed over the selected observation period, the time range affects the
+index amplitude.
 
--------------------------------------------------------------------------------------------------------------
-*How to cite*
+![Calculation of HyBRIS from inverted BSI (Sentinel-2) and VH/VV (Sentinel-1)](https://raw.githubusercontent.com/pdallago97/HyBRIS/main/docs/images/figure2.png)
+
+## Repository layout
+
+```text
+src/hybris/     Package implementation and public API
+examples/       Runnable scripts and example input data
+Dataset/        Research dataset and field-level time series
+docs/           Figures and supporting documentation
+tests/          Package smoke tests
+```
+
+## Examples
+
+- [Runnable examples](examples/)
+
+## More information
+
+- [Research paper](https://doi.org/10.1016/j.rse.2026.115553)
+
+## Citation
 
 Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs,
-Optical, radar, and hybrid indices to detect farming practices in Europe,
-Remote Sensing of Environment, Volume 344, 2026, 115553, ISSN 0034-4257,
-https://doi.org/10.1016/j.rse.2026.115553.
+"Optical, radar, and hybrid indices to detect farming practices in Europe,"
+*Remote Sensing of Environment*, volume 344, 2026, 115553, DOI: https://doi.org/10.1016/j.rse.2026.115553.
+
+## License
+
+HyBRIS is released under the [MIT License](LICENSE).
