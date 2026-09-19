@@ -3,14 +3,15 @@
 [![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/)
 [![License](https://img.shields.io/pypi/l/hybris.svg)](LICENSE)
 
-Optical, radar, and hybrid indices: handling Sentinel-1 and Sentinel-2 time series.
+## Optical, radar, and hybrid indices to detect farming practices in Europe
 
-Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, and Kirsten de Beurs
+This package offers functions and tools to handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
 
-Laboratory of Geo-Information Science and Remote Sensing, Wageningen
-University & Research.
+Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
 
-DOI: https://doi.org/10.1016/j.rse.2026.115553.
+Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
+
+Please refer to DOI for more information: https://www.sciencedirect.com/science/article/pii/S0034425726003238
 
 ## Install
 
