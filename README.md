@@ -15,8 +15,14 @@ Please refer to DOI for more information: https://www.sciencedirect.com/science/
 
 ## Install
 
+Using pip:
 ```bash
 pip install hybris
+```
+
+Using pixi:
+```bash
+pixi add --pypi hybris
 ```
 
 ## Requirements
