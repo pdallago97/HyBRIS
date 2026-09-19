@@ -40,7 +40,7 @@ This way, images acquired closer to the target day have higher weights and contr
 
 Next, a smoothed time series was calculated for HyBRIS and for each optical and radar index using a centered rolling mean with a window of ±15 days. Both smoothed and unsmoothed time series were then used to detect farming practices.
 
-!<img width="11693" height="5529" alt="Figure2" src="https://github.com/user-attachments/assets/6e7cb8b0-f6c0-493f-a0cd-da521e2e7a38" />
+![Calculation of HyBRIS from inverted BSI (Sentinel-2) and VH/VV (Sentinel-1)](https://raw.githubusercontent.com/pdallago97/HyBRIS/main/docs/images/figure2.png)
 
 Note that the considered length of the time series influences the amplitude of the time series itself. This is due to the normalization process done with percentiles (0.02-0.98) within the observation period.
 

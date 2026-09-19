@@ -29,6 +29,9 @@ dependencies = [
 gee = ["earthengine-api>=1.0"]
 examples = ["geopandas>=1.0", "contextily>=1.6", "xyzservices"]
 
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/README.md", "/LICENSE", "/pyproject.toml"]
+
 [project.urls]
 Homepage = "https://github.com/pdallago97/HyBRIS"
 Paper = "https://doi.org/10.1016/j.rse.2026.115553"
