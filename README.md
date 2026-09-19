@@ -19,14 +19,14 @@ Please refer to DOI for more information: https://www.sciencedirect.com/science/
 pip install hybris
 ```
 
-To use the Google Earth Engine download functions:
+To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api:
 
 ```bash
 pip install "hybris[gee]"
 ```
+When your Google Earth Engine project is setup, it needs to be authenticated ([![ee.Authenticate()](https://developers.google.com/earth-engine/apidocs/ee-authenticate)]) and initialized ([![ee.Initialize()](https://developers.google.com/earth-engine/apidocs/ee-initialize)]).
 
-Earth Engine must also be authenticated and initialized. The Sentinel-1 preprocessing
-function uses the `gee_s1_ard` Python API; see its
+ The Sentinel-1 preprocessing function uses the `gee_s1_ard` Python API; see its
 installation instructions in the function documentation [![gee_s1_ard](https://github.com/adugnag/gee_s1_ard)].
 
 ## Quickstart
@@ -54,8 +54,8 @@ and plots, run [`examples/hybris_example.py`](examples/hybris_example.py).
 
 ## Method summary
 
-HyBRIS combines one optical and one radar index into a daily, field-level time
-series. Sentinel-2 observations of the Bare Soil Index (BSI) and Sentinel-1
+The HyBRIS methodology combines one optical and one radar index into a daily, field-level time series.
+Here, Sentinel-2 observations of the Bare Soil Index (BSI) and Sentinel-1
 VH/VV observations are normalized and aggregated with a temporally weighted
 mean within a +/-12-day window. Closer observations have greater influence,
 which helps bridge irregular acquisitions and sensor-specific gaps. A
