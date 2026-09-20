@@ -64,8 +64,7 @@ maxima = find_maxima(hybris)
 minima = find_minima(hybris)
 ```
 
-For a complete workflow including orbit selection, ground truth, validation,
-and plots, run [`examples/hybris_example.py`](examples/hybris_example.py).
+For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](examples/hybris_example.py).
 
 ## Method summary
 
@@ -97,6 +96,10 @@ tests/          Package smoke tests
 ## Examples
 
 - [Runnable examples](examples/)
+
+## Research paper dataset
+
+- [Dataset](Dataset/)
 
 ## More information
 
