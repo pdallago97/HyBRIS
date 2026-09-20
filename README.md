@@ -1,11 +1,10 @@
 # HyBRIS
 
-[![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/)
-[![License](https://img.shields.io/pypi/l/hybris.svg)](LICENSE)
-
-## Optical, radar, and hybrid indices to detect farming practices in Europe
+[![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/) [![License](https://img.shields.io/pypi/l/hybris.svg)](https://github.com/pdallago97/HyBRIS/blob/main/LICENSE)
 
 This package offers functions and tools to handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
+
+## Optical, radar, and hybrid indices to detect farming practices in Europe
 
 Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
 
@@ -20,7 +19,7 @@ Using pip:
 pip install hybris
 ```
 
-Using pixi:
+Or using pixi:
 ```bash
 pixi add --pypi hybris
 ```
@@ -42,7 +41,7 @@ To download Sentinel-1 and -2 time series, Earth Engine must be installed. To in
 pip install "hybris[gee]"
 ```
 
-When your Google Earth Engine project is setup, it needs to be authenticated and initialized.
+To correctly set up your Google Earth Engine project, it needs to be authenticated and initialized.
 
  The Sentinel-1 preprocessing function uses the `gee_s1_ard` Python API; see its
 installation instructions in the function documentation. Clone the repository (https://github.com/adugnag/gee_s1_ard) inside the python environment you are using to make it work.
