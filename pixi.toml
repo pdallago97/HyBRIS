@@ -14,3 +14,6 @@ numpy = ">=2.5.2,<3"
 scipy = ">=1.18.0,<2"
 matplotlib = ">=3.11.1,<4"
 earthengine-api = ">=1.7.41,<2"
+
+[pypi-dependencies]
+hybris = ">=0.1.1, <0.2"
