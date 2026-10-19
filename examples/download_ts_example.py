@@ -2,10 +2,12 @@ import os
 import hybris
 
 ##### We use Google Earth Engine to download satellite data
-# A Google Earth Engine project is needed to continue. Insert your ee-project
-print(hybris.is_initialized())   # should print False
+# A Google Earth Engine project is needed to continue. You can follow https://courses.spatialthoughts.com/gee-sign-up.html for setting it up.
+# Insert your ee-project
+print("Is gee initialied? ", hybris.is_initialized())   # should print False
 ee = hybris.initialize_ee('ee-yourprojectname')
-print(hybris.is_initialized())   # should now be True
+# Follow the Authentication instructions and copy paste the key when required.
+print("Is gee initialied? ", hybris.is_initialized())   # should now be True
 
 ####################################### BANDS ################################################
 # Select the Sentinel-1 bands
@@ -34,7 +36,7 @@ end = ee.Date("2026-01-31")
 shapefile_path = 'path/to/your/shapefile.shp'
 fields = hybris.shp_to_ee(shapefile_path)
 
-# Alternatively, you can also write the path of your GEE asset, if it is already loaded in GEE.
+# Alternatively, you can also write the path of your GEE asset, if it is already loaded in your GEE account.
 # fields = ee.FeatureCollection('path/to/gee/asset')
 
 ####################################### OUTPUT ################################################
