@@ -3,9 +3,7 @@ import numpy as np
 from scipy.signal import find_peaks
 import matplotlib.pyplot as plt
 import os
-from hybris import (openSentinel2file, openSentinel1file, selectOrbit, add_vis, add_vis_radar, normalize_percentiles,
-                    daily_index_with_contributions_vectorized, calculate_hybris_vectorized, find_maxima, find_minima, growing_seasons, add_tillages, add_predictions, merge_with_GT, validate_predictions,
-                    filter_by_date, plot_hybris, plot_time_series, get_S2_one_field, get_S1_one_field)
+import hybris
 
 #specify bands for S1 and S2 fusion
 #Here for example we merge NDVI and VH/VV
@@ -22,26 +20,26 @@ bandsusedS1 = ['VV', 'VH', 'angle']
 
 ### PROCESS SENTINEL-2 (Optical)
 # Open Sentinel-2, remove NA, merge observation on the same day, and add Vegetation indices
-s2 = openSentinel2file(s2_path, bandsused)
-s2 = add_vis(s2)
+s2 = hybris.openSentinel2file(s2_path, bandsused)
+s2 = hybris.add_vis(s2)
 
 ## PROCESS SENTINEL-1 (Radar)
 # Open Sentinel-1 files, remove NA, merge observation on the same day, select most present orbit, and add Vegetation indices
-s1 = openSentinel1file(s1_path, bandsusedS1)
+s1 = hybris.openSentinel1file(s1_path, bandsusedS1)
 
 #Split ascending and descending orbits
 s1_des = s1[s1['orbit'] == 'DESCENDING']  # Select only descending orbits
 s1_asc = s1[s1['orbit'] == 'ASCENDING']  # Select only ascending orbits
 
 # Select most present orbit and add radar vegetation index
-s1_des = add_vis_radar(selectOrbit(s1_des, selectMostPresent=True))
-s1_asc = add_vis_radar(selectOrbit(s1_asc, selectMostPresent=True))
+s1_des = hybris.add_vis_radar(hybris.selectOrbit(s1_des, selectMostPresent=True))
+s1_asc = hybris.add_vis_radar(hybris.selectOrbit(s1_asc, selectMostPresent=True))
 
 s1 = pd.concat([s1_des, s1_asc])
 
 ## CREATE HYBRID INDEX
 #Our Sentinel 1 and 2 time series are ready to be merged: use daily_index_with_contributions_vectorized() to merge any bands
-hybrid_vegetation_index = daily_index_with_contributions_vectorized(s2,s1, bandS2=s2_band, bandS1=s1_band)
+hybrid_vegetation_index = hybris.daily_index_with_contributions_vectorized(s2,s1, bandS2=s2_band, bandS1=s1_band)
 print(hybrid_vegetation_index.head())
 
 
@@ -49,19 +47,19 @@ print(hybrid_vegetation_index.head())
 fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(8.2, 11.5), sharex=True)
 
 # --- First panel: Sentinel-2
-plot_time_series(s2[s2_band], s2['date'], color='green', title=s2_band, legend = True,
+hybris.plot_time_series(s2[s2_band], s2['date'], color='green', title=s2_band, legend = True,
                  show=False, alpha=0.8, marker='o', ax=axes[0])
 axes[0].set_title(s2_band + " - Sentinel 2", fontsize=14)
 
 # --- Second panel: Sentinel-1
-plot_time_series(s1[s1_band], s1['date'], color='blue', title=s1_band, legend = True,
+hybris.plot_time_series(s1[s1_band], s1['date'], color='blue', title=s1_band, legend = True,
                  add=False, show=False, alpha=0.8, marker='o', ax=axes[1])
 axes[1].set_title(s1_band + " - Sentinel 1", fontsize=14)
 
 # --- Third panel: Hybrid index
-plot_time_series(hybrid_vegetation_index["daily_index"], hybrid_vegetation_index['date'], color='purple', title="hybrid index unsmoothed", legend = True,
+hybris.plot_time_series(hybrid_vegetation_index["daily_index"], hybrid_vegetation_index['date'], color='purple', title="hybrid index unsmoothed", legend = True,
                  add=False, show=False, ax=axes[2], alpha= 0.3)
-plot_time_series(hybrid_vegetation_index["daily_index_smooth"], hybrid_vegetation_index['date'], color='purple', title="hybrid index smoothed", legend = True,
+hybris.plot_time_series(hybrid_vegetation_index["daily_index_smooth"], hybrid_vegetation_index['date'], color='purple', title="hybrid index smoothed", legend = True,
                  add=True, show=False, ax=axes[2], alpha=1)
 axes[2].set_title("Hybrid vegetation index", fontsize=14)
 
