@@ -1,7 +1,5 @@
-import geopandas as gpd
 import json
 import os
-from hybris.preprocessS1 import wrapper #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954, the repository was cloned from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
 
 ## FUNCTIONS TO DOWNLOAD TIME SERIES DATA FROM GOOGLE EARTH ENGINE
 def _require_ee():
@@ -31,6 +29,13 @@ def shp_to_ee(shapefile_path):
     Takes a shapefile path as input and loads it as a ee Feature collection (a google earth engine object)
     """
     ee = _require_ee()
+
+    try:
+        import geopandas as gpd
+    except ImportError as e:
+        raise ImportError(
+            "This function needs GeoPandas: pip install 'hybris[examples]'"
+        ) from e
 
     # Step 1: Load the shapefile using GeoPandas
     geopandas_df = gpd.read_file(shapefile_path)
@@ -165,11 +170,17 @@ def get_S1_one_field(fields, field_id, bandsusedS1, start_date, end_date, output
         Output CSV path, or the list of per-image records when not downloading.
     """
     ee = _require_ee()
-    
+
+    # Functions to preprocess Sentinel 1 images:
+    #Refer to Mulissa et al. 2021 https://doi.org/10.3390/rs13101954, the repository was cloned from https://github.com/adugnag/gee_s1_ard/tree/main/python-api
+    from hybris.preprocessS1 import wrapper  # gee_s1_ard preprocessing 
+
+    #Filter fields to the field of interest
     field = (ee.FeatureCollection(fields)
         .filter(ee.Filter.eq(id_column, field_id))
         .first())
 
+    #Load collection of Sentinel-1 images, filtered by date, bands, and field geometry
     collection = (ee.ImageCollection('COPERNICUS/S1_GRD_FLOAT')
                 .filterDate(start_date, end_date)
                 .select(bandsusedS1)
