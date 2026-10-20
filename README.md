@@ -55,19 +55,6 @@ More info:
 - [`Google Earth Engine authentication`](https://developers.google.com/earth-engine/apidocs/ee-authenticate)
 - [`Google Earth Engine initialization`](https://developers.google.com/earth-engine/apidocs/ee-initialize)
 
-## Load your own polygons!
-This can be a shapefile (.shp) or a geopackage (.gpkg)
-
-```python
-shapefile_path = 'local/path/to/your/shapefile.shp'
-fields = hybris.shp_to_ee(shapefile_path) #fields is converted to an Earth Engine object: ee.FeatureCollection
-```
-
-Alternatively, you can also write the path of your GEE asset, if it is already loaded in your GEE account.
-
-```python
-fields = ee.FeatureCollection('path/to/your/gee/asset')
-```
 
 ## Quickstart
 
@@ -103,6 +90,20 @@ hybrid = hybris.add_predictions(hybrid, predictions)
 ```
 
 For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
+
+## Load your own polygons!
+This can be a shapefile (.shp) or a geopackage (.gpkg)
+
+```python
+shapefile_path = 'local/path/to/your/shapefile.shp'
+fields = hybris.shp_to_ee(shapefile_path) #fields is converted to an Earth Engine object: ee.FeatureCollection
+```
+
+Alternatively, you can also write the path of your GEE asset, if it is already loaded in your GEE account.
+
+```python
+fields = ee.FeatureCollection('path/to/your/gee/asset')
+```
 
 ## Download the time series
 Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series: one row per date, one column per band.
