@@ -27,7 +27,12 @@ pixi add --pypi hybris
 To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api, and GeoPandas to use `shp_to_ee` with local shapefiles, install also the optional dependencies. Run:
 
 ```bash
-pip install "hybris[gee]"
+pip install hybris[gee]
+```
+
+Or using pixi:
+```bash
+pixi add --pypi hybris[gee]
 ```
 
 ## Requirements
