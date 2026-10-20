@@ -24,28 +24,34 @@ Or using pixi:
 pixi add --pypi hybris
 ```
 
-## Requirements
-To correctly set up your Google Earth Engine project, it needs to be authenticated and initialized.
-
-- Google Earth Engine authentication via
-https://developers.google.com/earth-engine/apidocs/ee-authenticate
-
-- Google Earth Engine initialization via
-https://developers.google.com/earth-engine/apidocs/ee-initialize
-
-To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api:
+To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api, and GeoPandas to use `shp_to_ee` with local shapefiles, install also the optional dependencies. Run:
 
 ```bash
 pip install "hybris[gee]"
 ```
 
-To use `shp_to_ee` with local shapefiles, install GeoPandas as well:
+## Requirements
 
-```bash
-pip install "hybris[gee,examples]"
+# Google Earth Engine
+A Google Earth Engine project is needed to continue. You can follow https://courses.spatialthoughts.com/gee-sign-up.html to correctly set up your Google Earth Engine project.
+
+Your project needs to be authenticated and initialized.
+
+- Google Earth Engine authentication
+https://developers.google.com/earth-engine/apidocs/ee-authenticate
+
+- Google Earth Engine initialization
+https://developers.google.com/earth-engine/apidocs/ee-initialize
+
+or following the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).:
+
+```python
+import hybris
+# Make sure to insert your ee-project
+ee = hybris.initialize_ee('ee-yourprojectname') #Insert the name of your existing ee-project
 ```
 
-- Sentinel-1 preprocessing package:
+# Sentinel-1 preprocessing package:
 The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its instructions in the function documentation (https://github.com/adugnag/gee_s1_ard).
 
 ## Quickstart
