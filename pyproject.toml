@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hybris"                   
-version = "0.1.1"
+version = "0.1.2"
 description = "Optical, radar, and hybrid indices to detect farming practices"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "MIT"                    
-license-files = ["LICENSE"]
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE", "src/hybris/preprocessS1/THIRD_PARTY_LICENCE"]
 authors = [{ name = "Paolo Dal Lago", email = "paolo.dallago@wur.nl" }]
 keywords = ["remote sensing", "Sentinel-1", "Sentinel-2", "agriculture", "tillage"]
 classifiers = [
@@ -17,6 +17,7 @@ classifiers = [
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: GIS",
+    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
 ]
 dependencies = [
     "numpy>=1.24",
@@ -26,11 +27,10 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-gee = ["earthengine-api>=1.0"]
-examples = ["geopandas>=1.0", "contextily>=1.6", "xyzservices"]
+gee = ["earthengine-api>=1.0", "geopandas>=1.0", "contextily>=1.6", "xyzservices"]
 
 [tool.hatch.build.targets.sdist]
-include = ["/src", "/tests", "/README.md", "/LICENSE", "/pyproject.toml"]
+include = ["/src", "/tests", "/examples", "/README.md", "/LICENSE", "/pyproject.toml"]
 
 [project.urls]
 Homepage = "https://github.com/pdallago97/HyBRIS"
