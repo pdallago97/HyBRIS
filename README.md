@@ -105,7 +105,7 @@ hybrid = hybris.add_predictions(hybrid, predictions)
 For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
 
 ## Download the time series
-Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series: one row per date, one column per band. The preprocessing and methodology is explained in detail in the [research paper](https://doi.org/10.1016/j.rse.2026.115553)
+Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series: one row per date, one column per band.
 
 The download of preprocessed time series for a given field is wrapped in one line of code:
 ```python
@@ -113,7 +113,7 @@ hybris.get_S1_one_field(fields, field_id, bandsusedS1, start, end, output_dir, i
 hybris.get_S2_one_field(fields, field_id, bandsusedS2, start, end, CLOUD_FILTER, output_dir, id_column, True)
 ```
 
-For a complete workflow, follow [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).
+For a complete workflow, follow [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py). The preprocessing and methodology is explained in detail in the [research paper](https://doi.org/10.1016/j.rse.2026.115553).
 
 ## Method summary
 
