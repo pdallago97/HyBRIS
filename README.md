@@ -57,7 +57,7 @@ ee = hybris.initialize_ee('ee-yourprojectname') #Insert the name of your existin
 ```
 
 # Sentinel-1 preprocessing package:
-The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its instructions in the function documentation (https://github.com/adugnag/gee_s1_ard).
+The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard).
 
 ## Quickstart
 
@@ -132,5 +132,7 @@ HyBRIS is released under the [GNU Affero General Public License v3 or later (AGP
 The Sentinel-1 ARD preprocessing is adapted from gee_s1_ard:
 
 Source: https://github.com/adugnag/gee_s1_ard (python-api folder)
+
 Author: Adugna Mullissa et al., MIT License — see [their license](src/hybris/preprocessS1/THIRD_PARTY_LICENCE).
+
 Reference: Mullissa et al. (2021), https://doi.org/10.3390/rs13101954
