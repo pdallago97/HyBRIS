@@ -10,7 +10,7 @@ Author: Paolo Dal Lago
 
 Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
 
-Please refer to DOI for more information: https://www.sciencedirect.com/science/article/pii/S0034425726003238
+Please refer to the [research paper](https://doi.org/10.1016/j.rse.2026.115553) for more information.
 
 ## Install
 
@@ -42,7 +42,7 @@ pixi add --pypi hybris[gee]
 ## Google Earth Engine
 A Google Earth Engine project is needed to download Sentinel-1 and -2 time series for your own georeferenced fields. You can follow [`this tutorial`](https://courses.spatialthoughts.com/gee-sign-up.html) to set up your Google Earth Engine project.
 
-Follow the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).:
+Then, follow the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py) to make sure your project is authenticated and initialized:
 
 ```python
 import hybris
@@ -51,14 +51,12 @@ ee = hybris.initialize_ee('ee-yourprojectname') #Insert the name of your existin
 print(hybris.is_initialized())   # should now be True
 ```
 
-Make sure your project is authenticated and initialized.
-
 More info:
 - [`Google Earth Engine authentication`](https://developers.google.com/earth-engine/apidocs/ee-authenticate)
 - [`Google Earth Engine initialization`](https://developers.google.com/earth-engine/apidocs/ee-initialize)
 
 ## Load your own polygons!
-This can either be a shapefile (.shp) or a geopackage (.gpkg)
+This can be a shapefile (.shp) or a geopackage (.gpkg)
 
 ```python
 shapefile_path = 'local/path/to/your/shapefile.shp'
@@ -79,11 +77,19 @@ radar indices, fuses them into a daily series, and detects farming events.
 ```python
 import hybris
 
-bands_s2 = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
-bands_s1 = ["VV", "VH", "angle"]
-s2 = hybris.add_vis(hybris.openSentinel2file("examples/data/Sentinel2_example.csv", bands_s2))
-s1 = hybris.add_vis_radar(hybris.openSentinel1file("examples/data/Sentinel1_example.csv", bands_s1))
+#Select bands of interest for Sentinel-2 and Sentinel-1
+bandsusedS2 = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
+bandsusedS1 = ["VV", "VH", "angle"]
+
+#Open Sentinel-2 file, remove NA, and add Vegetation Indices
+s2 = hybris.add_vis(hybris.openSentinel2file("examples/data/Sentinel2_example.csv", bandsusedS2))
+#Open Sentinel-1 file, remove NA, and add Vegetation Indices
+s1 = hybris.add_vis_radar(hybris.openSentinel1file("examples/data/Sentinel1_example.csv", bandsusedS1))
+
+#Calculate HyBRIS
 hybrid = hybris.calculate_hybris_vectorized(s1, s2)
+
+#Apply minMax method
 maxima = hybris.find_maxima(hybrid)
 minima = hybris.find_minima(hybrid)
 
@@ -99,10 +105,10 @@ hybrid = hybris.add_predictions(hybrid, predictions)
 For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
 
 ## Download the time series
-Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series, one row per date, one column per band.
+Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series: one row per date, one column per band. The preprocessing and methodology is explained in detail in the [research paper](https://doi.org/10.1016/j.rse.2026.115553)
 
+The download of preprocessed time series for a given field is wrapped in one line of code:
 ```python
-# preprocessing is explained in detail in https://doi.org/10.1016/j.rse.2026.115553
 hybris.get_S1_one_field(fields, field_id, bandsusedS1, start, end, output_dir, id_column, True)
 hybris.get_S2_one_field(fields, field_id, bandsusedS2, start, end, CLOUD_FILTER, output_dir, id_column, True)
 ```
