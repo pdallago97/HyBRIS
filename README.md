@@ -2,11 +2,11 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/hybris.svg)](https://pypi.org/project/hybris/) [![License](https://img.shields.io/pypi/l/hybris.svg)](https://github.com/pdallago97/HyBRIS/blob/main/LICENSE)
 
-This package offers functions and tools to handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
+This package offers functions and tools to download and handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
 
 ## Optical, radar, and hybrid indices to detect farming practices in Europe
 
-Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs
+Author: Paolo Dal Lago
 
 Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
 
@@ -25,6 +25,7 @@ pixi add --pypi hybris
 ```
 
 ## Requirements
+To correctly set up your Google Earth Engine project, it needs to be authenticated and initialized.
 
 - Google Earth Engine authentication via
 https://developers.google.com/earth-engine/apidocs/ee-authenticate
@@ -32,19 +33,14 @@ https://developers.google.com/earth-engine/apidocs/ee-authenticate
 - Google Earth Engine initialization via
 https://developers.google.com/earth-engine/apidocs/ee-initialize
 
-- Sentinel-1 preprocessing package:
-https://github.com/adugnag/gee_s1_ard
-
 To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api:
 
 ```bash
 pip install "hybris[gee]"
 ```
 
-To correctly set up your Google Earth Engine project, it needs to be authenticated and initialized.
-
- The Sentinel-1 preprocessing function uses the `gee_s1_ard` Python API; see its
-installation instructions in the function documentation. Clone the repository (https://github.com/adugnag/gee_s1_ard) inside the python environment you are using to make it work.
+- Sentinel-1 preprocessing package:
+The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its instructions in the function documentation (https://github.com/adugnag/gee_s1_ard).
 
 ## Quickstart
 
@@ -52,19 +48,18 @@ The example below reads prepared field-level CSV files, creates optical and
 radar indices, fuses them into a daily series, and detects farming events.
 
 ```python
-from hybris import (openSentinel1file, openSentinel2file, add_vis, add_vis_radar,
-    calculate_hybris_vectorized, find_maxima, find_minima)
+import hybris
 
 bands_s2 = ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12"]
 bands_s1 = ["VV", "VH", "angle"]
-s2 = add_vis(openSentinel2file("examples/data/Sentinel2_example.csv", bands_s2))
-s1 = add_vis_radar(openSentinel1file("examples/data/Sentinel1_example.csv", bands_s1))
-hybris = calculate_hybris_vectorized(s1, s2)
-maxima = find_maxima(hybris)
-minima = find_minima(hybris)
+s2 = hybris.add_vis(hybris.openSentinel2file("examples/data/Sentinel2_example.csv", bands_s2))
+s1 = hybris.add_vis_radar(hybris.openSentinel1file("examples/data/Sentinel1_example.csv", bands_s1))
+hybrid = hybris.calculate_hybris_vectorized(s1, s2)
+maxima = hybris.find_maxima(hybrid)
+minima = hybris.find_minima(hybrid)
 ```
 
-For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](examples/hybris_example.py).
+For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
 
 ## Method summary
 
@@ -90,16 +85,16 @@ src/hybris/     Package implementation and public API
 examples/       Runnable scripts and example input data
 Dataset/        Research dataset and field-level time series
 docs/           Figures and supporting documentation
-tests/          Package smoke tests
+tests/          Tests
 ```
 
 ## Examples
 
-- [Runnable examples](examples/)
+- [Runnable examples](https://github.com/pdallago97/HyBRIS/blob/main/examples/)
 
 ## Research paper dataset
 
-- [Dataset](Dataset/)
+- [Dataset](https://github.com/pdallago97/HyBRIS/blob/main/Dataset/)
 
 ## More information
 
@@ -113,4 +108,12 @@ Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs,
 
 ## License
 
-HyBRIS is released under the [MIT License](LICENSE).
+HyBRIS is released under the [GPLv3](LICENSE).
+
+## Acknowledgements
+
+The Sentinel-1 ARD preprocessing is adapted from gee_s1_ard:
+
+Source: https://github.com/adugnag/gee_s1_ard (python-api folder)
+Author: Adugna Mullissa et al., MIT License — see THIRD_PARTY_LICENSES.md
+Reference: Mullissa et al. (2021), https://doi.org/10.3390/rs13101954
