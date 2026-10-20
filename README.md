@@ -35,9 +35,9 @@ Or using pixi:
 pixi add --pypi hybris[gee]
 ```
 
-## Requirements
+# Requirements
 
-# Google Earth Engine
+## Google Earth Engine
 A Google Earth Engine project is needed to continue. You can follow https://courses.spatialthoughts.com/gee-sign-up.html to correctly set up your Google Earth Engine project.
 
 Your project needs to be authenticated and initialized.
@@ -56,10 +56,10 @@ import hybris
 ee = hybris.initialize_ee('ee-yourprojectname') #Insert the name of your existing ee-project
 ```
 
-# Sentinel-1 preprocessing package:
+## Sentinel-1 preprocessing package:
 The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard).
 
-## Quickstart
+# Quickstart
 
 The example below reads prepared field-level CSV files, creates optical and
 radar indices, fuses them into a daily series, and detects farming events.
