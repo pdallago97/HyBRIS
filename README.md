@@ -38,22 +38,35 @@ pixi add --pypi hybris[gee]
 # Requirements
 
 ## Google Earth Engine
-A Google Earth Engine project is needed to continue. You can follow https://courses.spatialthoughts.com/gee-sign-up.html to correctly set up your Google Earth Engine project.
+A Google Earth Engine project is needed to download Sentinel-1 and -2 time series for your own georeferenced fields. You can follow [`this tutorial`](https://courses.spatialthoughts.com/gee-sign-up.html) to correctly set up your Google Earth Engine project.
 
-Your project needs to be authenticated and initialized.
-
-- Google Earth Engine authentication
-https://developers.google.com/earth-engine/apidocs/ee-authenticate
-
-- Google Earth Engine initialization
-https://developers.google.com/earth-engine/apidocs/ee-initialize
-
-or following the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).:
+Follow the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).:
 
 ```python
 import hybris
 # Make sure to insert your ee-project
 ee = hybris.initialize_ee('ee-yourprojectname') #Insert the name of your existing ee-project
+print(hybris.is_initialized())   # should now be True
+```
+
+Make sure your project is authenticated and initialized.
+
+More info:
+- [`Google Earth Engine authentication`](https://developers.google.com/earth-engine/apidocs/ee-authenticate)
+- [`Google Earth Engine initialization`](https://developers.google.com/earth-engine/apidocs/ee-initialize)
+
+## Load your own polygons!
+This can either be a shapefile (.shp) or a geopackage (.gpkg)
+
+```python
+shapefile_path = 'local/path/to/your/shapefile.shp'
+fields = hybris.shp_to_ee(shapefile_path)
+```
+
+Alternatively, you can also write the path of your GEE asset, if it is already loaded in your GEE account.
+
+```python
+fields = ee.FeatureCollection('path/to/your/gee/asset')
 ```
 
 ## Sentinel-1 preprocessing package:
@@ -74,6 +87,14 @@ s1 = hybris.add_vis_radar(hybris.openSentinel1file("examples/data/Sentinel1_exam
 hybrid = hybris.calculate_hybris_vectorized(s1, s2)
 maxima = hybris.find_maxima(hybrid)
 minima = hybris.find_minima(hybrid)
+
+# Identify growing seasons based on predicted minima
+g_seasons = hybris.growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+# Add tillages to predictions
+predictions = hybris.add_tillages(g_seasons, minima)
+#Merge with predictions
+hybrid = hybris.add_predictions(hybrid, predictions)
+
 ```
 
 For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
@@ -102,7 +123,7 @@ src/hybris/     Package implementation and public API
 examples/       Runnable scripts and example input data
 Dataset/        Research dataset and field-level time series
 docs/           Figures and supporting documentation
-tests/          Tests
+tests/          Test for correctly importing the package
 ```
 
 ## Examples
