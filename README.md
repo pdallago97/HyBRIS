@@ -39,6 +39,12 @@ To download Sentinel-1 and -2 time series, Earth Engine must be installed. To in
 pip install "hybris[gee]"
 ```
 
+To use `shp_to_ee` with local shapefiles, install GeoPandas as well:
+
+```bash
+pip install "hybris[gee,examples]"
+```
+
 - Sentinel-1 preprocessing package:
 The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its instructions in the function documentation (https://github.com/adugnag/gee_s1_ard).
 
@@ -108,12 +114,12 @@ Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs,
 
 ## License
 
-HyBRIS is released under the [GPLv3](LICENSE).
+HyBRIS is released under the [GNU Affero General Public License v3 or later (AGPL-3.0-or-later)](LICENSE).
 
 ## Acknowledgements
 
 The Sentinel-1 ARD preprocessing is adapted from gee_s1_ard:
 
 Source: https://github.com/adugnag/gee_s1_ard (python-api folder)
-Author: Adugna Mullissa et al., MIT License — see THIRD_PARTY_LICENSES.md
+Author: Adugna Mullissa et al., MIT License — see [their license](src/hybris/preprocessS1/THIRD_PARTY_LICENCE).
 Reference: Mullissa et al. (2021), https://doi.org/10.3390/rs13101954
