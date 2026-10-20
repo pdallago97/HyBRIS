@@ -1,6 +1,7 @@
 import os
 import hybris
 
+####################################### GEE CONFIGURATION ################################################
 ##### We use Google Earth Engine to download satellite data
 print("Is gee initialied? ", hybris.is_initialized())   # should print False
 

@@ -24,8 +24,10 @@ Or using pixi:
 pixi add --pypi hybris
 ```
 
-To download Sentinel-1 and -2 time series, Earth Engine must be installed. To install the Google Earth Engine api, and GeoPandas to use `shp_to_ee` with local shapefiles, install also the optional dependencies. Run:
+## Install optional dependencies
+To download Sentinel-1 and -2 time series, Earth Engine must be installed. By installing the Google Earth Engine api and GeoPandas, your own shapefiles can be used for time-series download (through `shp_to_ee()`). To install these optional dependencies, run:
 
+Using pip:
 ```bash
 pip install hybris[gee]
 ```
@@ -35,10 +37,10 @@ Or using pixi:
 pixi add --pypi hybris[gee]
 ```
 
-# Requirements
+## Requirements
 
 ## Google Earth Engine
-A Google Earth Engine project is needed to download Sentinel-1 and -2 time series for your own georeferenced fields. You can follow [`this tutorial`](https://courses.spatialthoughts.com/gee-sign-up.html) to correctly set up your Google Earth Engine project.
+A Google Earth Engine project is needed to download Sentinel-1 and -2 time series for your own georeferenced fields. You can follow [`this tutorial`](https://courses.spatialthoughts.com/gee-sign-up.html) to set up your Google Earth Engine project.
 
 Follow the [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).:
 
@@ -60,7 +62,7 @@ This can either be a shapefile (.shp) or a geopackage (.gpkg)
 
 ```python
 shapefile_path = 'local/path/to/your/shapefile.shp'
-fields = hybris.shp_to_ee(shapefile_path)
+fields = hybris.shp_to_ee(shapefile_path) #fields is converted to an Earth Engine object: ee.FeatureCollection
 ```
 
 Alternatively, you can also write the path of your GEE asset, if it is already loaded in your GEE account.
@@ -69,10 +71,7 @@ Alternatively, you can also write the path of your GEE asset, if it is already l
 fields = ee.FeatureCollection('path/to/your/gee/asset')
 ```
 
-## Sentinel-1 preprocessing package:
-The Sentinel-1 preprocessing pipeline uses the `gee_s1_ard` Python API under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard).
-
-# Quickstart
+## Quickstart
 
 The example below reads prepared field-level CSV files, creates optical and
 radar indices, fuses them into a daily series, and detects farming events.
@@ -89,7 +88,7 @@ maxima = hybris.find_maxima(hybrid)
 minima = hybris.find_minima(hybrid)
 
 # Identify growing seasons based on predicted minima
-g_seasons = hybris.growing_seasons(maxima, minima) #assign sowing and harvest dates to a peak of season
+g_seasons = hybris.growing_seasons(maxima, minima)
 # Add tillages to predictions
 predictions = hybris.add_tillages(g_seasons, minima)
 #Merge with predictions
@@ -98,6 +97,17 @@ hybrid = hybris.add_predictions(hybrid, predictions)
 ```
 
 For a complete workflow including orbit selection, ground truth, and plots, run [`examples/hybris_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/hybris_example.py).
+
+## Download the time series
+Sentinel-1 and Sentinel-2 data are preprocessed and downloaded as .csv time series, one row per date, one column per band.
+
+```python
+# preprocessing is explained in detail in https://doi.org/10.1016/j.rse.2026.115553
+hybris.get_S1_one_field(fields, field_id, bandsusedS1, start, end, output_dir, id_column, True)
+hybris.get_S2_one_field(fields, field_id, bandsusedS2, start, end, CLOUD_FILTER, output_dir, id_column, True)
+```
+
+For a complete workflow, follow [`examples/download_ts_example.py`](https://github.com/pdallago97/HyBRIS/blob/main/examples/download_ts_example.py).
 
 ## Method summary
 
@@ -150,7 +160,7 @@ HyBRIS is released under the [GNU Affero General Public License v3 or later (AGP
 
 ## Acknowledgements
 
-The Sentinel-1 ARD preprocessing is adapted from gee_s1_ard:
+The Sentinel-1 preprocessing pipeline is adapted from the `gee_s1_ard` Python API, which is used under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard).
 
 Source: https://github.com/adugnag/gee_s1_ard (python-api folder)
 
