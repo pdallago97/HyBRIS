@@ -4,11 +4,11 @@ build-backend = "hatchling.build"
 
 [project]
 name = "hybris"                   
-version = "0.1.2"
-description = "Optical, radar, and hybrid indices to detect farming practices"
+version = "1.0"
+description = "Handles optical, radar, and hybrid time series for field-level monitoring"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "AGPL-3.0-or-later"
+license = "AGPLv3+"
 license-files = ["LICENSE", "src/hybris/preprocessS1/THIRD_PARTY_LICENCE"]
 authors = [{ name = "Paolo Dal Lago", email = "paolo.dallago@wur.nl" }]
 keywords = ["remote sensing", "Sentinel-1", "Sentinel-2", "agriculture", "tillage"]

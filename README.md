@@ -5,9 +5,6 @@
 This package offers functions and tools to download and handle Sentinel-1 and Sentinel-2 time series, and calculate hybrid indices.
 
 ## Optical, radar, and hybrid indices to detect farming practices in Europe
-
-Author: Paolo Dal Lago
-
 Laboratory of Geo-Information Science and Remote Sensing (GRS), Wageningen University & Research
 
 Please refer to the [research paper](https://doi.org/10.1016/j.rse.2026.115553) for more information.
@@ -155,22 +152,20 @@ tests/          Test for correctly importing the package
 
 - [Research paper](https://doi.org/10.1016/j.rse.2026.115553)
 
+## Acknowledgements
+
+The Sentinel-1 preprocessing pipeline is adapted from the `gee_s1_ard` Python API, which is used under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard):
+
+Source: https://github.com/adugnag/gee_s1_ard (python-api folder) —  [MIT License](src/hybris/preprocessS1/THIRD_PARTY_LICENCE).
+
+From: Mullissa, A.; Vollrath, A.; Odongo-Braun, C.; Slagter, B.; Balling, J.; Gou, Y.; Gorelick, N.; Reiche, J. Sentinel-1 SAR Backscatter Analysis Ready Data Preparation in Google Earth Engine. Remote Sens. 2021, 13, 1954. https://doi.org/10.3390/rs13101954
+
+## License
+
+HyBRIS is released under the [GNU Affero General Public License v3 or later (AGPLv3+)](LICENSE).
+
 ## Citation
 
 Paolo Dal Lago, Lammert Kooistra, Nandika Tsendbazar, Kirsten de Beurs,
 "Optical, radar, and hybrid indices to detect farming practices in Europe,"
 *Remote Sensing of Environment*, volume 344, 2026, 115553, DOI: https://doi.org/10.1016/j.rse.2026.115553.
-
-## License
-
-HyBRIS is released under the [GNU Affero General Public License v3 or later (AGPL-3.0-or-later)](LICENSE).
-
-## Acknowledgements
-
-The Sentinel-1 preprocessing pipeline is adapted from the `gee_s1_ard` Python API, which is used under the hood; see its [`instructions`](https://github.com/adugnag/gee_s1_ard).
-
-Source: https://github.com/adugnag/gee_s1_ard (python-api folder)
-
-Author: Adugna Mullissa et al., MIT License — see [their license](src/hybris/preprocessS1/THIRD_PARTY_LICENCE).
-
-Reference: Mullissa et al. (2021), https://doi.org/10.3390/rs13101954
