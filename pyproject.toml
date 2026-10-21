@@ -8,7 +8,7 @@ version = "1.0"
 description = "Handles optical, radar, and hybrid time series for field-level monitoring"
 readme = "README.md"
 requires-python = ">=3.10"
-license = "AGPLv3+"
+license = "AGPL-3.0-or-later"
 license-files = ["LICENSE", "src/hybris/preprocessS1/THIRD_PARTY_LICENCE"]
 authors = [{ name = "Paolo Dal Lago", email = "paolo.dallago@wur.nl" }]
 keywords = ["remote sensing", "Sentinel-1", "Sentinel-2", "agriculture", "tillage"]
@@ -16,8 +16,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
     "Intended Audience :: Science/Research",
-    "Topic :: Scientific/Engineering :: GIS",
-    "License :: OSI Approved :: GNU Affero General Public License v3 or later (AGPLv3+)",
+    "Topic :: Scientific/Engineering :: GIS"
 ]
 dependencies = [
     "numpy>=1.24",
